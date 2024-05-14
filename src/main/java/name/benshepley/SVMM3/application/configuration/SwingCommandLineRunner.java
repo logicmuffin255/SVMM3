@@ -1,7 +1,7 @@
 package name.benshepley.SVMM3.application.configuration;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import name.benshepley.SVMM3.page.main.view.MainFrame;
+import name.benshepley.SVMM3.view.main.MainFrame;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
