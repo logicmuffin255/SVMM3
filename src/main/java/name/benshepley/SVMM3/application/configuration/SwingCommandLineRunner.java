@@ -1,15 +1,22 @@
 package name.benshepley.SVMM3.application.configuration;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import name.benshepley.SVMM3.view.main.MainFrame;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SwingCommandLineRunner implements CommandLineRunner {
+    // Spring Beans:
+    private final MainFrame mainFrame;
+
+    @Autowired
+    public SwingCommandLineRunner(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        FlatLightLaf.setup();
-        new MainFrame();
+        this.mainFrame.setVisible(true);
     }
 }
