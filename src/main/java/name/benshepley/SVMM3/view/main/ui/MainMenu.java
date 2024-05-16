@@ -1,18 +1,12 @@
-package name.benshepley.SVMM3.view.main;
+package name.benshepley.SVMM3.view.main.ui;
 
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import name.benshepley.SVMM3.SVMM3Application;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 
-@Component
 public class MainMenu extends JMenuBar {
-
-    // Spring Beans:
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     // Events:
     public static class MainMenuGlobalSettingsActionEvent extends ApplicationEvent {
@@ -21,18 +15,12 @@ public class MainMenu extends JMenuBar {
         }
     }
 
-    @Autowired
-    public MainMenu(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @PostConstruct
-    public void init() {
+    public MainMenu() {
         // File:
         JMenu fileMenu = new JMenu("File");
 
         JMenuItem fileGlobalSettingsItem = new JMenuItem("Global Settings");
-        fileGlobalSettingsItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainMenuGlobalSettingsActionEvent(this)));
+        fileGlobalSettingsItem.addActionListener(a -> SVMM3Application.getContext().publishEvent(new MainMenuGlobalSettingsActionEvent(this)));
         fileMenu.add(fileGlobalSettingsItem);
 
         JMenuItem fileExitItem = new JMenuItem("Exit");
@@ -71,5 +59,6 @@ public class MainMenu extends JMenuBar {
 
         super.add(helpMenu);
     }
+
 
 }
