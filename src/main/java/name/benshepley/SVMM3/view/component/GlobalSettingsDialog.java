@@ -15,10 +15,8 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         JLabel stardewPathJLabel = new JLabel("Stardew Path");
         JTextField stardewPathTextField = new JTextField();
         JButton stardewPathBrowseButton = new JButton("Select");
-        stardewPathBrowseButton.addActionListener(a -> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.showOpenDialog(this);
-        });
+        JFileChooser chooser = new JFileChooser();
+        stardewPathBrowseButton.addActionListener(a -> chooser.showOpenDialog(this));
 
 
         JLabel nexusModsApiKey = new JLabel("Nexus Mods API Key");
@@ -26,7 +24,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         JButton nextModsApiKeyLookupButton = new JButton("Lookup");
 
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(a -> dispose());
+        cancelButton.addActionListener(a -> super.dispose());
         JButton saveButton = new JButton("Save");
 
         super.setLayout(new MigLayout("wrap 5", "[grow,fill]", "[grow,fill]"));
