@@ -2,7 +2,7 @@ package name.benshepley.SVMM3.controller;
 
 import lombok.Getter;
 import name.benshepley.SVMM3.repository.OperatingSystemRepository;
-import name.benshepley.SVMM3.service.GlobalSettingsService;
+import name.benshepley.SVMM3.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
@@ -15,7 +15,7 @@ public class MainController {
     private OperatingSystemRepository operatingSystemRepository;
 
     @Autowired
-    private GlobalSettingsService globalSettingsService;
+    private SettingsService settingsService;
 
     // Events:
     public static class OpenNexusModsEvent extends ApplicationEvent {
@@ -46,7 +46,7 @@ public class MainController {
 
     @EventListener
     public void onApplicationEvent(PlayStardewEvent ignoredEvent) {
-        this.operatingSystemRepository.openProcess(this.globalSettingsService.getGlobalSettings().getStardewPath());
+        this.operatingSystemRepository.openProcess(this.settingsService.getGlobalSettings().getStardewPath());
     }
 
     @EventListener

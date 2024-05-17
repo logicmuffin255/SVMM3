@@ -3,7 +3,7 @@ package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import name.benshepley.SVMM3.model.MainProfileTabModel;
+import name.benshepley.SVMM3.model.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.component.ProfilePanel;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
@@ -16,10 +16,10 @@ public class MainProfileTabs extends JTabbedPane {
     // Events:
     @Getter
     public static class MainProfileTabsAddProfileEvent extends ApplicationEvent {
-        private final MainProfileTabModel mainProfileTabModel;
-        public MainProfileTabsAddProfileEvent(Object source, MainProfileTabModel mainProfileTabModel) {
+        private final ProfileSettingsModel profileSettingsModel;
+        public MainProfileTabsAddProfileEvent(Object source, ProfileSettingsModel profileSettingsModel) {
             super(source);
-            this.mainProfileTabModel = mainProfileTabModel;
+            this.profileSettingsModel = profileSettingsModel;
         }
     }
 
@@ -27,7 +27,8 @@ public class MainProfileTabs extends JTabbedPane {
     @EventListener
     public void onApplicationEvent(MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent) {
         ProfilePanel profilePanel = new ProfilePanel();
-        super.insertTab(mainProfileTabsAddProfileEvent.getMainProfileTabModel().getTitle(), null, profilePanel, null, 0);
+        super.insertTab(mainProfileTabsAddProfileEvent.getProfileSettingsModel().getName(), null, profilePanel, null, 0);
+        super.setSelectedIndex(super.getTabCount() -2);
     }
 
 
@@ -42,6 +43,8 @@ public class MainProfileTabs extends JTabbedPane {
                 System.out.println("IT is time, captain.");
             }
         });
+
+
     }
 
 }

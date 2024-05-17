@@ -2,12 +2,11 @@ package name.benshepley.SVMM3.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.Data;
 
+@Data
 @Builder
-@Getter
 @AllArgsConstructor
-public class MainProfileTabModel {
-    private @NonNull String title;
+public class ProfileSettingsModel {
+    private String name;
 }
