@@ -16,8 +16,7 @@ public class StartupManager {
 
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
-        MainProfileTabs.MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent = new MainProfileTabs.MainProfileTabsAddProfileEvent(this);
-        mainProfileTabsAddProfileEvent.setMainProfileTab(MainProfileTabModel.builder().title("Ben").build());
+        MainProfileTabs.MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent = new MainProfileTabs.MainProfileTabsAddProfileEvent(this, MainProfileTabModel.builder().title("Ben").build());
         this.applicationEventPublisher.publishEvent(mainProfileTabsAddProfileEvent);
     }
 }

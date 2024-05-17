@@ -9,4 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GlobalSettingsModel {
     private String stardewPath;
+    private boolean manageSaveGames;
+    private String nexusModsAPIKey;
 }

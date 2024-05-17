@@ -1,6 +1,5 @@
 package name.benshepley.SVMM3.view;
 
-
 import jakarta.annotation.PostConstruct;
 import name.benshepley.SVMM3.view.component.GlobalSettingsDialog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class MainFrame extends JFrame {
 
         super.setJMenuBar(this.mainMenu);
         super.add(this.mainProfileTabs, BorderLayout.NORTH);
-        super.add(this.footerPanel, BorderLayout.SOUTH);
+        super.add(this.footerPanel, BorderLayout.CENTER);
 
         super.setVisible(true);
     }

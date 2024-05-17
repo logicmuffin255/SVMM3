@@ -2,6 +2,7 @@ package name.benshepley.SVMM3.view;
 
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import name.benshepley.SVMM3.model.MainProfileTabModel;
 import name.benshepley.SVMM3.view.component.ProfilePanel;
 import org.springframework.context.ApplicationEvent;
@@ -13,19 +14,12 @@ import javax.swing.*;
 @Component
 public class MainProfileTabs extends JTabbedPane {
     // Events:
+    @Getter
     public static class MainProfileTabsAddProfileEvent extends ApplicationEvent {
-        private MainProfileTabModel mainProfileTabModel;
-
-        public MainProfileTabsAddProfileEvent(Object source) {
+        private final MainProfileTabModel mainProfileTabModel;
+        public MainProfileTabsAddProfileEvent(Object source, MainProfileTabModel mainProfileTabModel) {
             super(source);
-        }
-
-        public void setMainProfileTab(MainProfileTabModel mainProfileTabModel) {
             this.mainProfileTabModel = mainProfileTabModel;
-        }
-
-        public MainProfileTabModel getMainProfileTab() {
-            return this.mainProfileTabModel;
         }
     }
 
@@ -33,7 +27,7 @@ public class MainProfileTabs extends JTabbedPane {
     @EventListener
     public void onApplicationEvent(MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent) {
         ProfilePanel profilePanel = new ProfilePanel();
-        super.insertTab(mainProfileTabsAddProfileEvent.getMainProfileTab().getTitle(), null, profilePanel, null, 0);
+        super.insertTab(mainProfileTabsAddProfileEvent.getMainProfileTabModel().getTitle(), null, profilePanel, null, 0);
     }
 
 
