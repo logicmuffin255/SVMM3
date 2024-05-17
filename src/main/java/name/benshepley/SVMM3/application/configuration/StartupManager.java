@@ -1,9 +1,10 @@
 package name.benshepley.SVMM3.application.configuration;
 
-import name.benshepley.SVMM3.view.main.model.MainProfileTab;
-import name.benshepley.SVMM3.view.main.service.MainManager;
+import name.benshepley.SVMM3.model.MainProfileTabModel;
+import name.benshepley.SVMM3.view.MainProfileTabs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +12,12 @@ import org.springframework.stereotype.Component;
 public class StartupManager {
 
     @Autowired
-    private MainManager mainManager;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
-        this.mainManager.startup();
-        this.mainManager.addProfile(MainProfileTab.builder().title("Ben").build());
-
+        MainProfileTabs.MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent = new MainProfileTabs.MainProfileTabsAddProfileEvent(this);
+        mainProfileTabsAddProfileEvent.setMainProfileTab(MainProfileTabModel.builder().title("Ben").build());
+        this.applicationEventPublisher.publishEvent(mainProfileTabsAddProfileEvent);
     }
 }

@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.view.global_settings.ui;
+package name.benshepley.SVMM3.view.component;
 
 import javax.swing.*;
 
@@ -8,7 +8,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super(parent, true);
         JButton saveButton = new JButton("Save");
         super.add(saveButton);
-        getRootPane().setDefaultButton( saveButton );
+        getRootPane().setDefaultButton(saveButton);
     }
 
 }

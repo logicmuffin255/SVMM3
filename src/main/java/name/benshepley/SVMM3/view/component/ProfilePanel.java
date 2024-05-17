@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.view.main.ui;
+package name.benshepley.SVMM3.view.component;
 
 import net.miginfocom.swing.MigLayout;
 

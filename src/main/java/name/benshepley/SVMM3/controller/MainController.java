@@ -3,19 +3,14 @@ package name.benshepley.SVMM3.controller;
 import name.benshepley.SVMM3.repository.OperatingSystemRepository;
 import name.benshepley.SVMM3.service.BrowserService;
 import name.benshepley.SVMM3.service.GlobalSettingsService;
-import name.benshepley.SVMM3.view.main.service.MainManager;
-import name.benshepley.SVMM3.view.main.ui.FooterPanel;
-import name.benshepley.SVMM3.view.main.ui.MainMenu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class MainController {
-
-    @Autowired
-    private MainManager mainManager;
-
+    // Spring Beans:
     @Autowired
     private BrowserService browserService;
 
@@ -25,18 +20,26 @@ public class MainController {
     @Autowired
     private GlobalSettingsService globalSettingsService;
 
-    @EventListener
-    public void onApplicationEvent(MainMenu.MainMenuGlobalSettingsActionEvent ignoredEvent) {
-        this.mainManager.showGlobalSettings();
+    // Events:
+    public static class OpenNexusModsEvent extends ApplicationEvent {
+        public OpenNexusModsEvent(Object source) {
+            super(source);
+        }
+    }
+
+    public static class PlayStardewEvent extends ApplicationEvent {
+        public PlayStardewEvent(Object source) {
+            super(source);
+        }
     }
 
     @EventListener
-    public void onApplicationEvent(FooterPanel.OpenNexusModsEvent ignoredEvent) {
+    public void onApplicationEvent(OpenNexusModsEvent ignoredEvent) {
         this.browserService.openNexusModsAtStardewValley();
     }
 
     @EventListener
-    public void onApplicationEvent(FooterPanel.PlayStardewEvent ignoredEvent) {
+    public void onApplicationEvent(PlayStardewEvent ignoredEvent) {
         this.operatingSystemRepository.execute(this.globalSettingsService.getGlobalSettings().getStardewPath());
     }
 

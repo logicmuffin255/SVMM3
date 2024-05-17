@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.view.main.model;
+package name.benshepley.SVMM3.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +8,6 @@ import lombok.NonNull;
 @Builder
 @Getter
 @AllArgsConstructor
-public class MainProfileTab {
+public class MainProfileTabModel {
     private @NonNull String title;
 }
