@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 
 @Component
-public class FooterPanel extends javax.swing.JPanel {
+public class HeaderPanel extends javax.swing.JPanel {
     // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -21,7 +21,7 @@ public class FooterPanel extends javax.swing.JPanel {
 
     // Constructor
     @Autowired
-    public FooterPanel(ApplicationEventPublisher applicationEventPublisher) {
+    public HeaderPanel(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 

@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
     // Spring Beans:
     private final MainMenu mainMenu;
     private final MainProfileTabs mainProfileTabs;
-    private final FooterPanel footerPanel;
+    private final HeaderPanel headerPanel;
 
     // Components:
     private final GlobalSettingsDialog globalSettingsDialog;
@@ -34,12 +34,12 @@ public class MainFrame extends JFrame {
     }
 
     @Autowired
-    public MainFrame(MainMenu mainMenu, MainProfileTabs mainProfileTabs, FooterPanel footerPanel) {
+    public MainFrame(MainMenu mainMenu, MainProfileTabs mainProfileTabs, HeaderPanel headerPanel) {
         super("Stardew Mod Manager 3");
 
         this.mainMenu = mainMenu;
         this.mainProfileTabs = mainProfileTabs;
-        this.footerPanel = footerPanel;
+        this.headerPanel = headerPanel;
         this.globalSettingsDialog = new GlobalSettingsDialog(this);
     }
 
@@ -50,8 +50,8 @@ public class MainFrame extends JFrame {
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         super.setJMenuBar(this.mainMenu);
-        super.add(this.mainProfileTabs, BorderLayout.NORTH);
-        super.add(this.footerPanel, BorderLayout.CENTER);
+        super.add(this.headerPanel, BorderLayout.NORTH);
+        super.add(this.mainProfileTabs, BorderLayout.CENTER);
 
         super.setVisible(true);
     }
