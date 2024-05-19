@@ -1,26 +1,29 @@
 package name.benshepley.SVMM3.view.component;
 
 
+import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class GlobalSettingsDialog extends javax.swing.JDialog {
+    private final ApplicationSettingsModel applicationSettingsModel;
 
-    public GlobalSettingsDialog(java.awt.Frame parent) {
+    public GlobalSettingsDialog(Frame parent, ApplicationSettingsModel applicationSettingsModel) {
         super(parent,"Stardew Mod Manager 3 Global Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        super.setSize(400, 200);
+
+        this.applicationSettingsModel = applicationSettingsModel;
 
         JLabel stardewPathJLabel = new JLabel("Stardew Path");
-        JTextField stardewPathTextField = new JTextField();
+        JTextField stardewPathTextField = new JTextField(this.applicationSettingsModel.getStardewPath(), 70);
         JButton stardewPathBrowseButton = new JButton("Select");
         JFileChooser chooser = new JFileChooser();
         stardewPathBrowseButton.addActionListener(a -> chooser.showOpenDialog(this));
 
-
         JLabel nexusModsApiKey = new JLabel("Nexus Mods API Key");
-        JTextField nexusModsApiKeyTextField = new JTextField();
+        JTextField nexusModsApiKeyTextField = new JTextField(this.applicationSettingsModel.getNexusModsAPIKey(), 70);
         JButton nextModsApiKeyLookupButton = new JButton("Lookup");
 
         JButton cancelButton = new JButton("Cancel");
@@ -37,10 +40,13 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super.add(nexusModsApiKeyTextField, "span 3");
         super.add(nextModsApiKeyLookupButton, "wrap");
 
-        super.add(saveButton);
-        super.add(cancelButton);
+
+        super.add(saveButton, "skip 1, span 2");
+        super.add(cancelButton, "span 2");
 
         getRootPane().setDefaultButton(saveButton);
+
+        super.pack();
     }
 
 }

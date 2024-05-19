@@ -11,22 +11,23 @@ import java.net.URI;
 
 @Repository
 public class OperatingSystemRepository {
+    public static final String NEXUS_MODS_STARDEW_BASE_URL = "https://www.nexusmods.com/stardewvalley";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OperatingSystemRepository.class);
-    private static final String NEXUS_MODS_STARDEW_BASE_URL = "https://www.nexusmods.com/stardewvalley";
 
 
-    public void browseToNexusModsAtStardewValley() {
+    public void browse(String url) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(URI.create(NEXUS_MODS_STARDEW_BASE_URL));
+                desktop.browse(URI.create(url));
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
             }
         }
     }
 
-    public void openProcess(String executable) {
+    public void execute(String executable) {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(executable);
             processBuilder.start();

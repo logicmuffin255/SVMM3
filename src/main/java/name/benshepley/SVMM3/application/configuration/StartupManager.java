@@ -1,8 +1,8 @@
 package name.benshepley.SVMM3.application.configuration;
 
-import name.benshepley.SVMM3.model.ProfileSettingsModel;
-import name.benshepley.SVMM3.service.SettingsService;
-import name.benshepley.SVMM3.view.MainProfileTabs;
+import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
+import name.benshepley.SVMM3.view.MainPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,12 +16,15 @@ public class StartupManager {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private SettingsService settingsService;
+    private ApplicationSettingsRepository applicationSettingsRepository;
 
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
-        for (ProfileSettingsModel profileSettings : this.settingsService.getApplicationSettings().getProfileSettingsModelList()) {
-            this.applicationEventPublisher.publishEvent(new MainProfileTabs.MainProfileTabsAddProfileEvent(this, profileSettings));
+        for (ProfileSettingsModel profileSettings : this.applicationSettingsRepository.restoreApplicationSettings().getProfileSettingsModelList()) {
+            this.applicationEventPublisher.publishEvent(new MainPanel.MainProfileTabsAddProfileEvent(this, profileSettings));
         }
+
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(System.getenv("LOCALAPPDATA"));
     }
 }

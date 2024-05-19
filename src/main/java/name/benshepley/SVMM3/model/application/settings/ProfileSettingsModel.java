@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.model;
+package name.benshepley.SVMM3.model.application.settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

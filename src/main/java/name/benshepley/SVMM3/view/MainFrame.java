@@ -1,6 +1,8 @@
 package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.view.component.GlobalSettingsDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -13,34 +15,33 @@ import java.awt.*;
 @Component
 public class MainFrame extends JFrame {
     // Spring Beans:
-    private final MainMenu mainMenu;
-    private final MainProfileTabs mainProfileTabs;
-    private final HeaderPanel headerPanel;
 
-    // Components:
-    private final GlobalSettingsDialog globalSettingsDialog;
+    private final MainMenu mainMenu;
+    private final MainPanel mainPanel;
 
     // Events:
+    @Getter
     public static class MainMenuGlobalSettingsEvent extends ApplicationEvent {
-        public MainMenuGlobalSettingsEvent(Object source) {
+        public final ApplicationSettingsModel applicationSettingsModel;
+        public MainMenuGlobalSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
             super(source);
+            this.applicationSettingsModel = applicationSettingsModel;
         }
     }
 
     // Listeners:
     @EventListener
-    public void onApplicationEvent(MainMenuGlobalSettingsEvent ignoredEvent) {
-        this.globalSettingsDialog.setVisible(true);
+    public void onApplicationEvent(MainMenuGlobalSettingsEvent mainMenuGlobalSettingsEvent) {
+        GlobalSettingsDialog globalSettingsDialog = new GlobalSettingsDialog(this, mainMenuGlobalSettingsEvent.getApplicationSettingsModel());
+        globalSettingsDialog.setVisible(true);
     }
 
     @Autowired
-    public MainFrame(MainMenu mainMenu, MainProfileTabs mainProfileTabs, HeaderPanel headerPanel) {
+    public MainFrame(MainMenu mainMenu, MainPanel mainPanel) {
         super("Stardew Mod Manager 3");
 
         this.mainMenu = mainMenu;
-        this.mainProfileTabs = mainProfileTabs;
-        this.headerPanel = headerPanel;
-        this.globalSettingsDialog = new GlobalSettingsDialog(this);
+        this.mainPanel = mainPanel;
     }
 
     @PostConstruct
@@ -50,8 +51,7 @@ public class MainFrame extends JFrame {
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         super.setJMenuBar(this.mainMenu);
-        super.add(this.headerPanel, BorderLayout.NORTH);
-        super.add(this.mainProfileTabs, BorderLayout.CENTER);
+        super.add(this.mainPanel, BorderLayout.CENTER);
 
         super.setVisible(true);
     }
