@@ -1,65 +1,95 @@
 package name.benshepley.SVMM3.view.component;
 
 import name.benshepley.SVMM3.controller.MainController;
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.model.ProfileModel;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ProfilePanel extends JPanel {
+    // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
-    private ProfileSettingsModel profileSettingsModel;
+    private ProfileModel profileModel;
 
-    public ProfilePanel(ApplicationEventPublisher applicationEventPublisher, ProfileSettingsModel profileSettingsModel) {
+    // Components:
+    private final JTable modsTable;
+
+    private final JButton configureModButton;
+    private final JButton viewModManifestButton;
+    private final JButton browseToModFolderButton;
+    private final JButton browseToModRepositoryButton;
+    private final JButton copyModButton;
+    private final JButton pasteModButton;
+    private final JButton deleteModButton;
+
+
+    public ProfilePanel(ApplicationEventPublisher applicationEventPublisher, ProfileModel profileModel) {
         super(new MigLayout("wrap 4", "[grow, fill]", "[grow, fill]"));
         super.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         this.applicationEventPublisher = applicationEventPublisher;
-        this.profileSettingsModel = profileSettingsModel;
+        this.profileModel = profileModel;
 
-        JButton profileSettingsButton = new JButton("Profile Settings");
+        String[] columnNames = { "Name", "Installed", "Available", "Repository" };
+        String[][] data = profileModel.getMods().stream()
+                .map(d -> new String[]{d.getName(), d.getInstalledVersion(), d.getAvailableVersion(), d.getRepositoryURL()})
+                .toArray(String[][]::new);
 
-        String[] columnNames = { "Name", "Author", "Installed Version" };
-        String[][] data = {{"Billymod", "bill", "0.7"},
-                           {"DiffrentMod", "Ben", "0.6"}};
-        JTable modsTable = new JTable(data, columnNames);
+        this.configureModButton = new JButton("Edit Mod Configuration");
+        this.configureModButton.setEnabled(false);
+        this.viewModManifestButton = new JButton("View Mod Manifest");
+        this.viewModManifestButton.setEnabled(false);
+        this.browseToModFolderButton = new JButton("Browse to Mod Folder");
+        this.browseToModFolderButton.setEnabled(false);
+        this.browseToModRepositoryButton = new JButton("Browse to Mod Repository");
+        this.browseToModRepositoryButton.setEnabled(false);
+        this.copyModButton = new JButton("Copy Mod(s)");
+        this.copyModButton.setEnabled(false);
+        this.pasteModButton = new JButton("Paste Mod(s)");
+        this.pasteModButton.setEnabled(false);
+        this.deleteModButton = new JButton("Delete Mod(s)");
+        this.deleteModButton.setEnabled(false);
 
+        this.modsTable = new JTable(data, columnNames);
         JScrollPane modsTableScrollPane = new JScrollPane(modsTable);
 
-        JButton configureModButton = new JButton("Configure Mod");
-        JButton browseToModButton = new JButton("Browse to Mod");
-        JButton updateModButton = new JButton("Update Mod(s)");
-        JButton removeModButton = new JButton("Remove Mod(s)");
-        JButton addModButton = new JButton("Add Mod");
-
-        JButton updateAllModsButton = new JButton("Update All Mods");
-        JButton openNexusModsButton = new JButton("Open Nexus Mods");
-        openNexusModsButton.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainController.OpenNexusModsEvent(this)));
-
+        this.modsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+        this.modsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        this.modsTable.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                this.configureModButton.setEnabled(true);
+                this.viewModManifestButton.setEnabled(true);
+                this.browseToModFolderButton.setEnabled(true);
+                this.browseToModRepositoryButton.setEnabled(true);
+                this.copyModButton.setEnabled(true);
+                this.pasteModButton.setEnabled(true);
+                this.deleteModButton.setEnabled(true);
+            }
+        });
 
         JButton playStardewWithSMAPIButton = new JButton("Play Stardew (With SMAPI)");
         playStardewWithSMAPIButton.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainController.PlayStardewEvent(this)));
 
         JButton playStardewWithoutSMAPIButton = new JButton("Play Stardew (Without SMAPI)");
 
-        super.add(updateAllModsButton, "span 1");
-        super.add(openNexusModsButton, "span 1");
-        super.add(profileSettingsButton, "span 1, wrap");
+        super.add(modsTableScrollPane, "span 3 7");
 
-        super.add(modsTableScrollPane, "span 3 5");
-
-        super.add(addModButton, "wrap");
         super.add(configureModButton, "wrap");
-        super.add(browseToModButton, "wrap");
-        super.add(updateModButton, "wrap");
-        super.add(removeModButton, "wrap");
+        super.add(viewModManifestButton, "wrap");
+        super.add(browseToModFolderButton, "wrap");
+        super.add(browseToModRepositoryButton, "wrap");
+        super.add(copyModButton, "wrap");
+        super.add(pasteModButton, "wrap");
+        super.add(deleteModButton, "wrap");
 
         super.add(playStardewWithSMAPIButton, "span 2");
         super.add(playStardewWithoutSMAPIButton, "span 2, wrap");
 
+
     }
 
-    //public void populateTable(String[][] data)
 }

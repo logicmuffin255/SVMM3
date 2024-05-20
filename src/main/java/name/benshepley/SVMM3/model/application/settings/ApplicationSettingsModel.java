@@ -4,6 +4,7 @@ package name.benshepley.SVMM3.model.application.settings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import name.benshepley.SVMM3.model.ProfileModel;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public class ApplicationSettingsModel {
     private String stardewPath;
     private String nexusModsAPIKey;
 
-    private List<ProfileSettingsModel> profileSettingsModelList;
+    private List<ProfileModel> profileModelList;
 }

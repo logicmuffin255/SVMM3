@@ -1,7 +1,8 @@
 package name.benshepley.SVMM3.repository;
 
+import name.benshepley.SVMM3.model.ModModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.model.ProfileModel;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,12 @@ public class ApplicationSettingsRepository {
         this.applicationSettings = ApplicationSettingsModel.builder()
                 .stardewPath("C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley\\")
                 .nexusModsAPIKey("JPJ3s7BvR38HgTgilb5LUyFOLgR814O2bP9kBu+hqfv0W0jVDWOLT1k=--3Q7Y+hAoO4pM2/V4--n/XNj1/1DylU9RxxeSUHEQ==")
-                .profileSettingsModelList(List.of(ProfileSettingsModel.builder().name("Ben").build()))
+                .profileModelList(List.of(ProfileModel.builder()
+                        .name("Ben")
+                        .mods(List.of(
+                                new ModModel("mod1", "0.6", "0.7", "http:\\imdb.com"),
+                                new ModModel("mod2", "0.5", "0.7", "http:\\imdb.com")))
+                        .build()))
             .build();
     }
 

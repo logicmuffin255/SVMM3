@@ -25,39 +25,31 @@ public class MainMenu extends JMenuBar {
     @PostConstruct
     public void init() {
         // File:
-        JMenu fileMenu = new JMenu("File");
+        JMenu applicationMenu = new JMenu("Application");
 
-        JMenuItem fileGlobalSettingsItem = new JMenuItem("Global Settings");
-        fileGlobalSettingsItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainFrame.MainMenuGlobalSettingsEvent(this, this.applicationSettingsRepository.restoreApplicationSettings())));
-        fileMenu.add(fileGlobalSettingsItem);
+        JMenuItem applicationSettingsMenuItem = new JMenuItem("Application Settings");
+        applicationSettingsMenuItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainFrame.ApplicationSettingsEvent(this, this.applicationSettingsRepository.restoreApplicationSettings())));
+        applicationMenu.add(applicationSettingsMenuItem);
 
         JMenuItem fileExitItem = new JMenuItem("Exit");
         fileExitItem.addActionListener(a -> System.exit(0));
-        fileMenu.add(fileExitItem);
+        applicationMenu.add(fileExitItem);
 
-        super.add(fileMenu);
+        super.add(applicationMenu);
 
         // Edit:
-        JMenu editMenu = new JMenu("Edit");
+        JMenu profileMenu = new JMenu("Profile");
 
-        JMenuItem editCopyProfile = new JMenuItem("Copy Profile");
-        editMenu.add(editCopyProfile);
+        JMenuItem profileSettingsMenuItem = new JMenuItem("Profile Settings");
+        profileMenu.add(profileSettingsMenuItem);
 
-        JMenuItem editDeleteProfile = new JMenuItem("Delete Profile");
-        editMenu.add(editDeleteProfile);
+        JMenuItem copyProfileMenuItem = new JMenuItem("Copy Profile");
+        profileMenu.add(copyProfileMenuItem);
 
-        editMenu.addSeparator();
+        JMenuItem deleteProfileMenuItem = new JMenuItem("Delete Profile");
+        profileMenu.add(deleteProfileMenuItem);
 
-        JMenuItem editCopyMods = new JMenuItem("Copy Mod(s)");
-        editMenu.add(editCopyMods);
-
-        JMenuItem editPasteMods = new JMenuItem("Paste Mod(s)");
-        editMenu.add(editPasteMods);
-
-        JMenuItem editViewClipboard = new JMenuItem("View Clipboard");
-        editMenu.add(editViewClipboard);
-
-        super.add(editMenu);
+        super.add(profileMenu);
 
         // About:
         JMenu helpMenu = new JMenu("Help");

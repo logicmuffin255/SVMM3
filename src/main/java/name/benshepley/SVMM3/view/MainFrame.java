@@ -21,9 +21,9 @@ public class MainFrame extends JFrame {
 
     // Events:
     @Getter
-    public static class MainMenuGlobalSettingsEvent extends ApplicationEvent {
+    public static class ApplicationSettingsEvent extends ApplicationEvent {
         public final ApplicationSettingsModel applicationSettingsModel;
-        public MainMenuGlobalSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
+        public ApplicationSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
             super(source);
             this.applicationSettingsModel = applicationSettingsModel;
         }
@@ -31,8 +31,8 @@ public class MainFrame extends JFrame {
 
     // Listeners:
     @EventListener
-    public void onApplicationEvent(MainMenuGlobalSettingsEvent mainMenuGlobalSettingsEvent) {
-        GlobalSettingsDialog globalSettingsDialog = new GlobalSettingsDialog(this, mainMenuGlobalSettingsEvent.getApplicationSettingsModel());
+    public void onApplicationEvent(ApplicationSettingsEvent applicationSettingsEvent) {
+        GlobalSettingsDialog globalSettingsDialog = new GlobalSettingsDialog(this, applicationSettingsEvent.getApplicationSettingsModel());
         globalSettingsDialog.setVisible(true);
     }
 
