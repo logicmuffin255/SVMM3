@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 public class ProfilePanel extends JPanel {
     // Spring Beans:
@@ -34,11 +35,6 @@ public class ProfilePanel extends JPanel {
         this.applicationEventPublisher = applicationEventPublisher;
         this.profileModel = profileModel;
 
-        String[] columnNames = { "Name", "Installed", "Available", "Repository" };
-        String[][] data = profileModel.getMods().stream()
-                .map(d -> new String[]{d.getName(), d.getInstalledVersion(), d.getAvailableVersion(), d.getRepositoryURL()})
-                .toArray(String[][]::new);
-
         this.configureModButton = new JButton("Edit Mod Configuration");
         this.configureModButton.setEnabled(false);
         this.viewModManifestButton = new JButton("View Mod Manifest");
@@ -54,10 +50,27 @@ public class ProfilePanel extends JPanel {
         this.deleteModButton = new JButton("Delete Mod(s)");
         this.deleteModButton.setEnabled(false);
 
-        this.modsTable = new JTable(data, columnNames);
-        JScrollPane modsTableScrollPane = new JScrollPane(modsTable);
 
-        this.modsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+        Object[][] data = profileModel.getMods().stream()
+                .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
+                .toArray(Object[][]::new);
+
+        DefaultTableModel model = new DefaultTableModel(data, new Object[]{ "Enabled", "Name", "Version", "Notes" }) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class;
+                } else {
+                    return String.class;
+                }
+            }
+        };
+
+        this.modsTable = new JTable(model);
+        JScrollPane modsTableScrollPane = new JScrollPane(this.modsTable);
+
+        this.modsTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        this.modsTable.getColumnModel().getColumn(1).setPreferredWidth(200);
         this.modsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         this.modsTable.getSelectionModel().addListSelectionListener(event -> {
             if (!event.getValueIsAdjusting()) {

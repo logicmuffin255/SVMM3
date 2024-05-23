@@ -4,9 +4,11 @@ import name.benshepley.SVMM3.model.ProfileModel;
 import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
 import name.benshepley.SVMM3.view.MainPanel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +20,12 @@ public class StartupManager {
     @Autowired
     private ApplicationSettingsRepository applicationSettingsRepository;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
+    @Value("${user.dir}")
+    private String currentDir;
+
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
         for (ProfileModel profile : this.applicationSettingsRepository.restoreApplicationSettings().getProfileModelList()) {
@@ -26,5 +34,9 @@ public class StartupManager {
 
         System.out.println(System.getProperty("user.dir"));
         System.out.println(System.getenv("LOCALAPPDATA"));
+    }
+
+    private void setupDevMods() {
+
     }
 }

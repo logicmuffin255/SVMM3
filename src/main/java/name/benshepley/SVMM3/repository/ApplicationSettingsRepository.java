@@ -18,8 +18,8 @@ public class ApplicationSettingsRepository {
                 .profileModelList(List.of(ProfileModel.builder()
                         .name("Ben")
                         .mods(List.of(
-                                new ModModel("mod1", "0.6", "0.7", "http:\\imdb.com"),
-                                new ModModel("mod2", "0.5", "0.7", "http:\\imdb.com")))
+                                new ModModel(true, "mod1", "0.6","Ok", "http:\\imdb.com"),
+                                new ModModel(true, "Mod2", "0.5", "Ok", "http:\\imdb.com")))
                         .build()))
             .build();
     }
