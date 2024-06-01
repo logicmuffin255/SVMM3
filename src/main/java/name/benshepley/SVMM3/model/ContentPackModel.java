@@ -1,13 +1,12 @@
-package com.mysandbox.helloworld.model;
+package name.benshepley.SVMM3.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class ContentPackModel {
-    private String UniqueID;
-    private String MinimumVersion;
+    private String uniqueID;
+    private String minimumVersion;
 }
