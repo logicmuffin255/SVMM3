@@ -1,17 +1,15 @@
-package name.benshepley.SVMM3.model;
+package name.benshepley.SVMM3.model.application.settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class ProfileModel {
+public class ProfileSettingsModel {
     private String name;
-    private List<ModModel> mods;
+    private List<ModSettingsModel> mods;
 }

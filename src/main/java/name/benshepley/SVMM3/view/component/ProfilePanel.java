@@ -1,20 +1,18 @@
 package name.benshepley.SVMM3.view.component;
 
 import name.benshepley.SVMM3.controller.MainController;
-import name.benshepley.SVMM3.model.ProfileModel;
+import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class ProfilePanel extends JPanel {
     // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
-    private ProfileModel profileModel;
+    private ProfileSettingsModel profileSettingsModel;
 
     // Components:
     private final JTable modsTable;
@@ -28,12 +26,12 @@ public class ProfilePanel extends JPanel {
     private final JButton deleteModButton;
 
 
-    public ProfilePanel(ApplicationEventPublisher applicationEventPublisher, ProfileModel profileModel) {
+    public ProfilePanel(ApplicationEventPublisher applicationEventPublisher, ProfileSettingsModel profileSettingsModel) {
         super(new MigLayout("wrap 4", "[grow, fill]", "[grow, fill]"));
         super.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
         this.applicationEventPublisher = applicationEventPublisher;
-        this.profileModel = profileModel;
+        this.profileSettingsModel = profileSettingsModel;
 
         this.configureModButton = new JButton("Edit Mod Configuration");
         this.configureModButton.setEnabled(false);
@@ -51,7 +49,7 @@ public class ProfilePanel extends JPanel {
         this.deleteModButton.setEnabled(false);
 
 
-        Object[][] data = profileModel.getMods().stream()
+        Object[][] data = profileSettingsModel.getMods().stream()
                 .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
                 .toArray(Object[][]::new);
 

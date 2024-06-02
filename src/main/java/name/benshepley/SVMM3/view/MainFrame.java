@@ -2,8 +2,10 @@ package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.view.component.GlobalSettingsDialog;
+import name.benshepley.SVMM3.view.component.PopupDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
@@ -21,6 +23,15 @@ public class MainFrame extends JFrame {
 
     // Events:
     @Getter
+    public static class PopupDialogEvent extends ApplicationEvent {
+        public final PopupConfigurationModel popupConfigurationModel;
+        public PopupDialogEvent(Object source, PopupConfigurationModel popupConfigurationModel) {
+            super(source);
+            this.popupConfigurationModel = popupConfigurationModel;
+        }
+    }
+
+    @Getter
     public static class ApplicationSettingsEvent extends ApplicationEvent {
         public final ApplicationSettingsModel applicationSettingsModel;
         public ApplicationSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
@@ -30,6 +41,15 @@ public class MainFrame extends JFrame {
     }
 
     // Listeners:
+    @EventListener
+    public void onApplicationEvent(PopupDialogEvent popupDialogEvent) {
+        PopupDialog popupDialog = new PopupDialog(this, popupDialogEvent.getPopupConfigurationModel());
+        popupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        popupDialog.setSize(300, 200);
+        popupDialog.setLocation((this.getWidth() - popupDialog.getWidth()) / 2, (this.getHeight() - popupDialog.getHeight()) / 2);
+        popupDialog.setVisible(true);
+    }
+
     @EventListener
     public void onApplicationEvent(ApplicationSettingsEvent applicationSettingsEvent) {
         GlobalSettingsDialog globalSettingsDialog = new GlobalSettingsDialog(this, applicationSettingsEvent.getApplicationSettingsModel());

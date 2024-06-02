@@ -3,7 +3,7 @@ package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import name.benshepley.SVMM3.model.ProfileModel;
+import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.component.ProfilePanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -20,18 +20,18 @@ public class MainPanel extends JTabbedPane {
     // Events:
     @Getter
     public static class MainProfileTabsAddProfileEvent extends ApplicationEvent {
-        private final ProfileModel profileModel;
-        public MainProfileTabsAddProfileEvent(Object source, ProfileModel profileModel) {
+        private final ProfileSettingsModel profileSettingsModel;
+        public MainProfileTabsAddProfileEvent(Object source, ProfileSettingsModel profileSettingsModel) {
             super(source);
-            this.profileModel = profileModel;
+            this.profileSettingsModel = profileSettingsModel;
         }
     }
 
     // Listeners:
     @EventListener
     public void onApplicationEvent(MainProfileTabsAddProfileEvent mainProfileTabsAddProfileEvent) {
-        ProfilePanel profilePanel = new ProfilePanel(this.applicationEventPublisher, mainProfileTabsAddProfileEvent.getProfileModel());
-        super.insertTab(mainProfileTabsAddProfileEvent.getProfileModel().getName(), null, profilePanel, null, 0);
+        ProfilePanel profilePanel = new ProfilePanel(this.applicationEventPublisher, mainProfileTabsAddProfileEvent.getProfileSettingsModel());
+        super.insertTab(mainProfileTabsAddProfileEvent.getProfileSettingsModel().getName(), null, profilePanel, null, 0);
         super.setSelectedIndex(super.getTabCount() -2);
     }
 

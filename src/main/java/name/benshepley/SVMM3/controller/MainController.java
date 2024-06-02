@@ -18,12 +18,6 @@ public class MainController {
     private ApplicationSettingsRepository applicationSettingsRepository;
 
     // Events:
-    public static class OpenNexusModsEvent extends ApplicationEvent {
-        public OpenNexusModsEvent(Object source) {
-            super(source);
-        }
-    }
-
     public static class PlayStardewEvent extends ApplicationEvent {
         public PlayStardewEvent(Object source) {
             super(source);
@@ -40,13 +34,8 @@ public class MainController {
     }
 
     @EventListener
-    public void onApplicationEvent(OpenNexusModsEvent ignoredEvent) {
-        this.operatingSystemRepository.browse(OperatingSystemRepository.NEXUS_MODS_STARDEW_BASE_URL);
-    }
-
-    @EventListener
     public void onApplicationEvent(PlayStardewEvent ignoredEvent) {
-        this.operatingSystemRepository.execute(this.applicationSettingsRepository.restoreApplicationSettings().getStardewPath());
+        this.operatingSystemRepository.execute(this.applicationSettingsRepository.restoreApplicationSettings().getStardewValleyPath());
     }
 
     @EventListener

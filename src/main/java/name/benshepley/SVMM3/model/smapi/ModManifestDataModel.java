@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.model;
+package name.benshepley.SVMM3.model.smapi;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManifestDataModel {
+public class ModManifestDataModel {
     private String name;
     private String author;
     private String version;

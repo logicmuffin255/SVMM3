@@ -17,14 +17,10 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         this.applicationSettingsModel = applicationSettingsModel;
 
         JLabel stardewPathJLabel = new JLabel("Stardew Path");
-        JTextField stardewPathTextField = new JTextField(this.applicationSettingsModel.getStardewPath(), 70);
+        JTextField stardewPathTextField = new JTextField(this.applicationSettingsModel.getStardewValleyPath(), 70);
         JButton stardewPathBrowseButton = new JButton("Select");
         JFileChooser chooser = new JFileChooser();
         stardewPathBrowseButton.addActionListener(a -> chooser.showOpenDialog(this));
-
-        JLabel nexusModsApiKey = new JLabel("Nexus Mods API Key");
-        JTextField nexusModsApiKeyTextField = new JTextField(this.applicationSettingsModel.getNexusModsAPIKey(), 70);
-        JButton nextModsApiKeyLookupButton = new JButton("Lookup");
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(a -> super.dispose());
@@ -35,11 +31,6 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super.add(stardewPathJLabel);
         super.add(stardewPathTextField, "span 3");
         super.add(stardewPathBrowseButton, "wrap");
-
-        super.add(nexusModsApiKey);
-        super.add(nexusModsApiKeyTextField, "span 3");
-        super.add(nextModsApiKeyLookupButton, "wrap");
-
 
         super.add(saveButton, "skip 1, span 2");
         super.add(cancelButton, "span 2");

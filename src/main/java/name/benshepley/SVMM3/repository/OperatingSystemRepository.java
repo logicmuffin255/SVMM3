@@ -11,8 +11,6 @@ import java.net.URI;
 
 @Repository
 public class OperatingSystemRepository {
-    public static final String NEXUS_MODS_STARDEW_BASE_URL = "https://www.nexusmods.com/stardewvalley";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(OperatingSystemRepository.class);
 
 
@@ -29,8 +27,8 @@ public class OperatingSystemRepository {
 
     public void execute(String executable) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(executable);
-            processBuilder.start();
+            new ProcessBuilder(executable)
+                .start();
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
