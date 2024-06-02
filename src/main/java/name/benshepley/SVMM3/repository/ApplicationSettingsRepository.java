@@ -2,6 +2,7 @@ package name.benshepley.SVMM3.repository;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import jakarta.annotation.PostConstruct;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
@@ -26,8 +27,9 @@ public class ApplicationSettingsRepository {
 
     @PostConstruct
     public void init() {
-        this.objectMapper = JsonMapper.builder().configure(
-                    MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+        this.objectMapper = JsonMapper.builder()
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+                .enable(SerializationFeature.INDENT_OUTPUT)
             .build();
     }
 

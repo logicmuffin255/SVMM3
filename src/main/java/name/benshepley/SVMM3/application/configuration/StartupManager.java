@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Collections;
 
 @Component
 public class StartupManager {
@@ -38,20 +40,43 @@ public class StartupManager {
             this.applicationEventPublisher.publishEvent(new MainFrame.PopupDialogEvent(this,
                     PopupConfigurationModel.builder()
                             .title("First time running")
-                            .message("You need to configure the application before you can use it. You will be asked to select where you installed Stardew Valley.")
+                            .message("You need to configure the application before you can use it. You will be asked to select where you installed Stardew Valley. The system will automatically import any existing mods you have installed.")
                             .okButtonActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    StartupManager.this.applicationEventPublisher.publishEvent(new MainFrame.ApplicationSettingsEvent(this, new ApplicationSettingsModel()));
+                                    StartupManager.this.applicationEventPublisher.publishEvent(new MainFrame.ApplicationSettingsEvent(this,
+                                            ApplicationSettingsModel.builder()
+                                                    .version("1.0")
+                                                    .stardewPath(StartupManager.this.detectStardewValleyLocation())
+                                                    .editorPath(StartupManager.this.detectEditorLocation())
+                                                .build()
+                                    ));
                                 }
                             })
                         .build()));
+
+            this.applicationEventPublisher.publishEvent(new MainPanel.MainProfileTabsAddProfileEvent(this, ProfileSettingsModel.builder().name("Imported").mods(Collections.emptyList()).build()));
         }
 
-        for (ProfileSettingsModel profile : this.applicationSettingsRepository.restoreApplicationSettings().getProfileSettingsModelList()) {
-            this.applicationEventPublisher.publishEvent(new MainPanel.MainProfileTabsAddProfileEvent(this, profile));
-        }
+    }
 
+    private String detectStardewValleyLocation() {
+        if (new File("C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley\\").exists()) {
+            return "C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley";
+        } else if (new File("C:\\Program Files (x86)\\Steam\\steamapps\\Common\\Stardew Valley\\").exists()) {
+            return "C:\\Program Files (x86)\\Steam\\steamapps\\Common\\Stardew Valley\\";
+        } else {
+            return "";
+        }
+    }
+
+    private String detectEditorLocation() {
+        if (new File("C:\\Program Files\\Notepad++\\notepad++.exe").exists()) {
+            return "C:\\Program Files\\Notepad++\\notepad++.exe";
+        } else if (new File("C:\\Windows\\notepad.exe").exists()) {
+            return "C:\\Windows\\notepad.exe";
+        }
+        return  "";
     }
 
 }

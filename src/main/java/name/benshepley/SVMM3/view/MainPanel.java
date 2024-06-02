@@ -52,8 +52,6 @@ public class MainPanel extends JTabbedPane {
                 System.out.println("IT is time, captain.");
             }
         });
-
-
     }
 
 }

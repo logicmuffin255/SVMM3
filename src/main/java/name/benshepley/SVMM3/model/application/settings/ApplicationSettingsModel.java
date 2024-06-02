@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ApplicationSettingsModel {
     private String version;
-    private String stardewValleyPath;
+    private String stardewPath;
     private String editorPath;
 
-    private List<ProfileSettingsModel> profileSettingsModelList = new ArrayList<>();
+    private List<ProfileSettingsModel> profileSettingsList = new ArrayList<>();
 }

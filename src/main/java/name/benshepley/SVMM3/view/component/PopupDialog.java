@@ -17,7 +17,7 @@ public class PopupDialog extends javax.swing.JDialog {
         messageTextArea.setLineWrap(true);
         messageTextArea.setWrapStyleWord(true);
 
-        messageTextArea.setFont(new Font("Serif", Font.PLAIN, 14));
+        messageTextArea.setFont(new Font("Serif", Font.PLAIN, 16));
 
         JButton okButton = new JButton("OK");
         okButton.addActionListener(e -> {

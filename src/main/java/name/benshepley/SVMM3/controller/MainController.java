@@ -1,6 +1,7 @@
 package name.benshepley.SVMM3.controller;
 
 import lombok.Getter;
+import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
 import name.benshepley.SVMM3.repository.OperatingSystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +19,32 @@ public class MainController {
     private ApplicationSettingsRepository applicationSettingsRepository;
 
     // Events:
-    public static class PlayStardewEvent extends ApplicationEvent {
-        public PlayStardewEvent(Object source) {
+    @Getter
+    public static class ExecuteProcessEvent extends ApplicationEvent {
+        private final String executable;
+        public ExecuteProcessEvent(Object source, String executable) {
             super(source);
+            this.executable = executable;
         }
     }
 
     @Getter
-    public static class OpenExplorerEvent extends ApplicationEvent {
-        private final String path;
-        public OpenExplorerEvent(Object source, String path) {
+    public static class SaveApplicationSettingsEvent extends ApplicationEvent {
+        private final ApplicationSettingsModel applicationSettingsModel;
+        public SaveApplicationSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
             super(source);
-            this.path = path;
+            this.applicationSettingsModel = applicationSettingsModel;
         }
     }
 
     @EventListener
-    public void onApplicationEvent(PlayStardewEvent ignoredEvent) {
-        this.operatingSystemRepository.execute(this.applicationSettingsRepository.restoreApplicationSettings().getStardewValleyPath());
+    public void onApplicationEvent(String executable) {
+        this.operatingSystemRepository.execute(executable);
     }
 
     @EventListener
-    public void onApplicationEvent(OpenExplorerEvent openExplorerEvent) {
-        this.operatingSystemRepository.openExplorer(openExplorerEvent.getPath());
+    public void onApplicationEvent(SaveApplicationSettingsEvent saveApplicationSettingsEvent) {
+        this.applicationSettingsRepository.storeApplicationSettings(saveApplicationSettingsEvent.getApplicationSettingsModel());
     }
 
 }

@@ -8,16 +8,18 @@ import name.benshepley.SVMM3.view.component.GlobalSettingsDialog;
 import name.benshepley.SVMM3.view.component.PopupDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Getter
 @Component
 public class MainFrame extends JFrame {
     // Spring Beans:
-
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final MainMenu mainMenu;
     private final MainPanel mainPanel;
 
@@ -57,9 +59,10 @@ public class MainFrame extends JFrame {
     }
 
     @Autowired
-    public MainFrame(MainMenu mainMenu, MainPanel mainPanel) {
+    public MainFrame(ApplicationEventPublisher applicationEventPublisher, MainMenu mainMenu, MainPanel mainPanel) {
         super("Stardew Mod Manager 3");
 
+        this.applicationEventPublisher = applicationEventPublisher;
         this.mainMenu = mainMenu;
         this.mainPanel = mainPanel;
     }

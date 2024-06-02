@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 public class ProfilePanel extends JPanel {
     // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
-    private ProfileSettingsModel profileSettingsModel;
+    private final ProfileSettingsModel profileSettingsModel;
 
     // Components:
     private final JTable modsTable;
@@ -83,7 +83,7 @@ public class ProfilePanel extends JPanel {
         });
 
         JButton playStardewWithSMAPIButton = new JButton("Play Stardew (With SMAPI)");
-        playStardewWithSMAPIButton.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainController.PlayStardewEvent(this)));
+        playStardewWithSMAPIButton.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainController.ExecuteProcessEvent(this, "")));
 
         JButton playStardewWithoutSMAPIButton = new JButton("Play Stardew (Without SMAPI)");
 
