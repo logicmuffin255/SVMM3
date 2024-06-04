@@ -18,5 +18,5 @@ public class ApplicationSettingsModel {
     private String stardewPath;
     private String editorPath;
 
-    private List<ProfileSettingsModel> profileSettingsList = new ArrayList<>();
+    private List<ProfileSettingsModel> profileSettings = new ArrayList<>();
 }

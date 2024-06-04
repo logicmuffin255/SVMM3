@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.view.component;
+package name.benshepley.SVMM3.view.component.dialog;
 
 import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 

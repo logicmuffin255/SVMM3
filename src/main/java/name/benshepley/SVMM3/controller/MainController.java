@@ -29,9 +29,9 @@ public class MainController {
     }
 
     @Getter
-    public static class SaveApplicationSettingsEvent extends ApplicationEvent {
+    public static class StoreApplicationSettingsEvent extends ApplicationEvent {
         private final ApplicationSettingsModel applicationSettingsModel;
-        public SaveApplicationSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
+        public StoreApplicationSettingsEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
             super(source);
             this.applicationSettingsModel = applicationSettingsModel;
         }
@@ -43,8 +43,8 @@ public class MainController {
     }
 
     @EventListener
-    public void onApplicationEvent(SaveApplicationSettingsEvent saveApplicationSettingsEvent) {
-        this.applicationSettingsRepository.storeApplicationSettings(saveApplicationSettingsEvent.getApplicationSettingsModel());
+    public void onApplicationEvent(StoreApplicationSettingsEvent storeApplicationSettingsEvent) {
+        this.applicationSettingsRepository.storeApplicationSettings(storeApplicationSettingsEvent.getApplicationSettingsModel());
     }
 
 }

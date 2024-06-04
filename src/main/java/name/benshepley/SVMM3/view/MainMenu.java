@@ -28,7 +28,7 @@ public class MainMenu extends JMenuBar {
         JMenu applicationMenu = new JMenu("Application");
 
         JMenuItem applicationSettingsMenuItem = new JMenuItem("Application Settings");
-        applicationSettingsMenuItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainFrame.ApplicationSettingsEvent(this, this.applicationSettingsRepository.restoreApplicationSettings())));
+        applicationSettingsMenuItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainFrame.ShowGlobalSettingsDialogEvent(this, this.applicationSettingsRepository.restoreApplicationSettings())));
         applicationMenu.add(applicationSettingsMenuItem);
 
         JMenuItem fileExitItem = new JMenuItem("Exit");

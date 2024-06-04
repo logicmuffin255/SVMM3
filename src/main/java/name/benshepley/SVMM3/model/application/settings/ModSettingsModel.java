@@ -8,9 +8,9 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class ModSettingsModel {
-    private Boolean enabled;
     private String name;
     private String installedVersion;
     private String notes;
     private String repository;
+    private Boolean enabled;
 }
