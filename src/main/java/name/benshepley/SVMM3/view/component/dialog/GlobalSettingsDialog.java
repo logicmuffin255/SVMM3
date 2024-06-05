@@ -31,6 +31,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.parent = parent;
 
+        /* Setup UI Components: */
         JLabel stardewPathJLabel = new JLabel("Stardew Valley Path:");
         this.stardewPathTextField = new JTextField(50);
         JButton stardewPathBrowseButton = new JButton("Select");
@@ -109,7 +110,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         modsPathBrowseButton.addActionListener(a -> this.modsPathChooser.showOpenDialog(this));
 
 
-
+        /* Layout: */
         this.saveButton = new JButton("Save");
         this.cancelButton = new JButton("Cancel");
 
@@ -135,55 +136,49 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
     }
 
     public void loadSettings(ApplicationSettingsModel applicationSettingsModel) {
-        if (applicationSettingsModel == null) {
-            this.setupForFirstTime();
-            return;
-        }
-
-        this.applicationSettingsModel = applicationSettingsModel;
-        this.stardewPathTextField.setText(applicationSettingsModel.getStardewPath());
-        this.editorPathTextField.setText(applicationSettingsModel.getEditorPath());
-        this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
-        this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
-
+        /* Setup Buttons: */
+        this.cancelButton.addActionListener(a -> super.dispose());
         this.saveButton.addActionListener(a -> {
-            if (!this.applicationSettingsModel.getStardewPath().isBlank()) {
-                parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
+            if (this.validateForm()) {
                 super.dispose();
-            } else {
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
-                        PopupConfigurationModel.builder()
-                                .title("Path to Stardew Valley required")
-                                .message("Path to Stardew Valley required.")
-                                .build()
-                ));
+                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel, null));
             }
         });
-        this.cancelButton.addActionListener(a -> super.dispose());
+
+        if (applicationSettingsModel == null) {
+            this.applicationSettingsModel = new ApplicationSettingsModel();
+            this.setupForFirstTime();
+        } else {
+            this.applicationSettingsModel = applicationSettingsModel;
+            this.stardewPathTextField.setText(applicationSettingsModel.getStardewPath());
+            this.editorPathTextField.setText(applicationSettingsModel.getEditorPath());
+            this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
+            this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
+        }
     }
 
     public void setupForFirstTime() {
-        this.applicationSettingsModel = new ApplicationSettingsModel();
+        this.cancelButton.setEnabled(false);
 
-        final File stardewGogLocation = new File("C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley\\");
-        final File stardewSteamLocation = new File("C:\\Program Files (x86)\\Steam\\steamapps\\Common\\Stardew Valley\\");
-        final File editorNotepadPlusPLusLocation = new File("C:\\Program Files\\Notepad++\\notepad++.exe");
-        final File editorWindowsNotepadLocation = new File("C:\\Windows\\notepad.exe");
+        final var stardewGogLocation = new File("C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley\\");
+        final var stardewSteamLocation = new File("C:\\Program Files (x86)\\Steam\\steamapps\\Common\\Stardew Valley\\");
+        final var editorNotepadPlusPLusLocation = new File("C:\\Program Files\\Notepad++\\notepad++.exe");
+        final var editorWindowsNotepadLocation = new File("C:\\Windows\\notepad.exe");
 
         if (stardewGogLocation.exists()) {
-            applicationSettingsModel.setStardewPath(stardewGogLocation.getPath());
+            this.applicationSettingsModel.setStardewPath(stardewGogLocation.getPath());
             this.stardewPathTextField.setText(stardewGogLocation.getPath());
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
         } else if (stardewSteamLocation.exists()) {
-            applicationSettingsModel.setEditorPath(stardewSteamLocation.getPath());
+            this.applicationSettingsModel.setEditorPath(stardewSteamLocation.getPath());
             this.stardewPathTextField.setText(stardewSteamLocation.getPath());
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
         }
 
         if (editorNotepadPlusPLusLocation.exists()) {
-            applicationSettingsModel.setEditorPath(editorNotepadPlusPLusLocation.getPath());
+            this.applicationSettingsModel.setEditorPath(editorNotepadPlusPLusLocation.getPath());
             this.editorPathTextField.setText(editorNotepadPlusPLusLocation.getPath());
             this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
         } else if (editorWindowsNotepadLocation.exists()) {
@@ -196,58 +191,55 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
                     PopupConfigurationModel.builder()
                             .title("Stardew Valley (and mods) detected automatically")
-                            .message("Path to Stardew Valley (and mods) detected automatically. Please Verify.")
+                            .message("Path to Stardew Valley, an editor, and mods were detected automatically. Please Verify.")
                         .build()
             ));
         }
+    }
 
-        this.saveButton.addActionListener(a -> {
-            this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
-            this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
-            this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
+    private boolean validateForm() {
+        this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
+        this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+        this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
 
-            if (this.applicationSettingsModel.getStardewPath() == null || this.applicationSettingsModel.getStardewPath().isBlank()) {
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
-                        PopupConfigurationModel.builder()
-                                .title("Path to Stardew Valley required")
-                                .message("Path to Stardew Valley required.")
-                                .build()
-                ));
-                return;
-            } else if (this.applicationSettingsModel.getEditorPath() == null || this.applicationSettingsModel.getEditorPath().isBlank()){
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
-                        PopupConfigurationModel.builder()
-                                .title("Path to editor required")
-                                .message("Path to editor required.")
-                                .build()
-                ));
-                return;
-            } else if (this.applicationSettingsModel.getModsPath() == null || this.applicationSettingsModel.getModsPath().isBlank()) {
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
-                        PopupConfigurationModel.builder()
-                                .title("Path to mods required")
-                                .message("Path to mods required.")
-                                .build()
-                ));
-                return;
-            }
+        if (this.applicationSettingsModel.getStardewPath() == null || this.applicationSettingsModel.getStardewPath().isBlank()) {
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                    PopupConfigurationModel.builder()
+                            .title("Path to Stardew Valley required")
+                            .message("Path to Stardew Valley required.")
+                            .build()
+            ));
+            return false;
+        } else if (this.applicationSettingsModel.getEditorPath() == null || this.applicationSettingsModel.getEditorPath().isBlank()){
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                    PopupConfigurationModel.builder()
+                            .title("Path to editor required")
+                            .message("Path to editor required.")
+                            .build()
+            ));
+            return false;
+        } else if (this.applicationSettingsModel.getModsPath() == null || this.applicationSettingsModel.getModsPath().isBlank()) {
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                    PopupConfigurationModel.builder()
+                            .title("Path to mods required")
+                            .message("Path to mods required.")
+                            .build()
+            ));
+            return false;
+        }
 
-            var editorFile = new File(this.applicationSettingsModel.getEditorPath());
-            if (!editorFile.isFile() || !editorFile.getName().toLowerCase().endsWith(".exe")) {
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
-                        PopupConfigurationModel.builder()
-                                .title("Path to editor must be an executable")
-                                .message("Path to editor must be an executable.")
-                                .build()
-                ));
-                return;
-            }
+        var editorFile = new File(this.applicationSettingsModel.getEditorPath());
+        if (!editorFile.isFile() || !editorFile.getName().toLowerCase().endsWith(".exe")) {
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                    PopupConfigurationModel.builder()
+                            .title("Path to editor must be an executable")
+                            .message("Path to editor must be an executable.")
+                            .build()
+            ));
+            return false;
+        }
 
-            super.dispose();
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel));
-
-        });
-        this.cancelButton.setEnabled(false);
+        return true;
     }
 
 }

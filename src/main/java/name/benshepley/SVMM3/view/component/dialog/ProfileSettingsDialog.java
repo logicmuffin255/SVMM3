@@ -1,6 +1,7 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
+import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
@@ -15,12 +16,14 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private final JButton cancelButton;
 
     private ApplicationSettingsModel applicationSettingsModel;
+    private ProfileSettingsModel profileSettingsModel;
 
     public ProfileSettingsDialog(MainFrame parent) {
         super(parent, "Profile Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.parent = parent;
 
+        /* Setup UI Components: */
         JLabel profileNameLabel = new JLabel("Profile Name");
         this.profileNameTextField = new JTextField(50);
 
@@ -28,6 +31,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         this.saveButton = new JButton("Save");
         this.cancelButton = new JButton("Cancel");
 
+        /* Layout: */
         super.setLayout(new MigLayout("wrap 3", "[grow,fill]", "[grow,fill]"));
         super.add(profileNameLabel);
         super.add(profileNameTextField, "span 2");
@@ -37,12 +41,14 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         super.add(cancelButton);
     }
 
-    public void loadSettings(ApplicationSettingsModel applicationSettingsModel) {
+    public void loadSettings(ApplicationSettingsModel applicationSettingsModel, ProfileSettingsModel profileSettingsModel) {
         this.applicationSettingsModel = applicationSettingsModel;
-        if (this.applicationSettingsModel == null || this.applicationSettingsModel.getProfileSettings().isEmpty()) {
+        this.profileSettingsModel = profileSettingsModel;
+        if (this.profileSettingsModel == null) {
             this.setupForFirstTime();
-            return;
+
         }
+
 
 
     }

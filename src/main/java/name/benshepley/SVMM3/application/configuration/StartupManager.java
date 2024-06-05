@@ -28,8 +28,8 @@ public class StartupManager {
         if (applicationSettingsModel == null) {
             this.applicationEventPublisher.publishEvent(new MainFrame.ShowPopupDialogEvent(this,
                     PopupConfigurationModel.builder()
-                            .title("First time running")
-                            .message("You need to configure the application before you can use it. You will be asked to select where you installed Stardew Valley. The system will automatically import any existing mods you have installed.")
+                            .title("First Time Setup")
+                            .message("This is your first time running the mod manager. You need to configure the application before you can use it. You will be asked to select where you installed Stardew Valley, a text editor and where you would like to store the mods that mod manager manages.")
                             .okButtonActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {

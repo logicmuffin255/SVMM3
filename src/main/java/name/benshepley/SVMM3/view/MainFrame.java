@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
+import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.component.dialog.GlobalSettingsDialog;
 import name.benshepley.SVMM3.view.component.dialog.PopupDialog;
 import name.benshepley.SVMM3.view.component.dialog.ProfileSettingsDialog;
@@ -28,7 +29,7 @@ public class MainFrame extends JFrame  {
     // Events:
     @Getter
     public static class ShowPopupDialogEvent extends ApplicationEvent {
-        public final PopupConfigurationModel popupConfigurationModel;
+        private final PopupConfigurationModel popupConfigurationModel;
         public ShowPopupDialogEvent(Object source, PopupConfigurationModel popupConfigurationModel) {
             super(source);
             this.popupConfigurationModel = popupConfigurationModel;
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame  {
 
     @Getter
     public static class ShowGlobalSettingsDialogEvent extends ApplicationEvent {
-        public final ApplicationSettingsModel applicationSettingsModel;
+        private final ApplicationSettingsModel applicationSettingsModel;
         public ShowGlobalSettingsDialogEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
             super(source);
             this.applicationSettingsModel = applicationSettingsModel;
@@ -46,10 +47,12 @@ public class MainFrame extends JFrame  {
 
     @Getter
     public static class ShowProfileSettingsDialogEvent extends ApplicationEvent {
-        public final ApplicationSettingsModel applicationSettingsModel;
-        public ShowProfileSettingsDialogEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
+        private final ApplicationSettingsModel applicationSettingsModel;
+        private final ProfileSettingsModel profileSettingsModel;
+        public ShowProfileSettingsDialogEvent(Object source, ApplicationSettingsModel applicationSettingsModel, ProfileSettingsModel profileSettingsModel) {
             super(source);
             this.applicationSettingsModel = applicationSettingsModel;
+            this.profileSettingsModel = profileSettingsModel;
         }
     }
 
@@ -58,7 +61,7 @@ public class MainFrame extends JFrame  {
     public void onApplicationEvent(ShowPopupDialogEvent showPopupDialogEvent) {
         PopupDialog popupDialog = new PopupDialog(this, showPopupDialogEvent.getPopupConfigurationModel());
         popupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        popupDialog.setSize(300, 200);
+        popupDialog.setSize(400, 300);
         popupDialog.setLocation((this.getWidth() - popupDialog.getWidth()) / 2, (this.getHeight() - popupDialog.getHeight()) / 2);
         popupDialog.setVisible(true);
     }
@@ -74,7 +77,7 @@ public class MainFrame extends JFrame  {
     @EventListener
     public void onApplicationEvent(ShowProfileSettingsDialogEvent showProfileSettingsDialogEvent) {
         ProfileSettingsDialog profileSettingsDialog = new ProfileSettingsDialog(this);
-        profileSettingsDialog.loadSettings(showProfileSettingsDialogEvent.applicationSettingsModel);
+        profileSettingsDialog.loadSettings(showProfileSettingsDialogEvent.applicationSettingsModel, showProfileSettingsDialogEvent.profileSettingsModel);
         profileSettingsDialog.pack();
         profileSettingsDialog.setVisible(true);
     }
