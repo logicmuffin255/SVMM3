@@ -74,7 +74,7 @@ public class MainFrame extends JFrame  {
     @EventListener
     public void onApplicationEvent(ShowProfileSettingsDialogEvent showProfileSettingsDialogEvent) {
         ProfileSettingsDialog profileSettingsDialog = new ProfileSettingsDialog(this);
-        profileSettingsDialog.loadSettings(showProfileSettingsDialogEvent.applicationSettingsModel, null);
+        profileSettingsDialog.loadSettings(showProfileSettingsDialogEvent.applicationSettingsModel);
         profileSettingsDialog.pack();
         profileSettingsDialog.setVisible(true);
     }
