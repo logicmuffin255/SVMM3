@@ -37,9 +37,9 @@ public class StartupManager {
                                 }
                             })
                         .build()));
+        } else if (applicationSettingsModel.getProfileSettings().isEmpty()) {
+            this.applicationEventPublisher.publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, applicationSettingsModel, null));
         }
-
-        //TODO: Check to see if initial profile exists
 
     }
 

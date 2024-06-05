@@ -1,6 +1,5 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
-
 import name.benshepley.SVMM3.controller.MainController;
 import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
@@ -10,7 +9,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-import java.util.Objects;
 
 public class GlobalSettingsDialog extends javax.swing.JDialog {
     private final MainFrame parent;
@@ -99,7 +97,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             }
         };
         this.modsPathChooser = new JFileChooser();
-        this.modsPathChooser.setFileFilter(stardewPathFileFilter);
+        this.modsPathChooser.setFileFilter(modsPathFileFilter);
         this.modsPathChooser.setAcceptAllFileFilterUsed(false);
         this.modsPathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.modsPathChooser.addActionListener(a -> {
@@ -141,6 +139,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         this.saveButton.addActionListener(a -> {
             if (this.validateForm()) {
                 super.dispose();
+                this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
                 this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel, null));
             }
         });
