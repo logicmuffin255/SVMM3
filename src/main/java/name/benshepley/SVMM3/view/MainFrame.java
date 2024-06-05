@@ -15,12 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
+
 
 @Getter
 @Component
-public class MainFrame extends JFrame implements WindowFocusListener {
+public class MainFrame extends JFrame  {
     // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
     private final MainMenu mainMenu;
@@ -80,17 +79,6 @@ public class MainFrame extends JFrame implements WindowFocusListener {
         profileSettingsDialog.setVisible(true);
     }
 
-    // SWING method to detect focus changes:
-    @Override
-    public void windowGainedFocus(WindowEvent e) {
-        System.out.println("window state changed: " + e.getNewState());
-    }
-
-    @Override
-    public void windowLostFocus(WindowEvent e) {
-        System.out.println("window state changed: " + e.getNewState());
-    }
-
 
     @Autowired
     public MainFrame(ApplicationEventPublisher applicationEventPublisher, MainMenu mainMenu, MainTabbedPane mainTabbedPane) {
@@ -112,7 +100,6 @@ public class MainFrame extends JFrame implements WindowFocusListener {
 
         super.setVisible(true);
 
-        super.addWindowFocusListener( this);
     }
 
 }

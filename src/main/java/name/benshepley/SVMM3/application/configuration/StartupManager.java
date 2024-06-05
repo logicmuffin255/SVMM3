@@ -37,8 +37,9 @@ public class StartupManager {
                                 }
                             })
                         .build()));
-
         }
+
+        //TODO: Check to see if initial profile exists
 
     }
 

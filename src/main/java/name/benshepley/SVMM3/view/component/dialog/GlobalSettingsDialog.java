@@ -10,13 +10,16 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import java.util.Objects;
 
 public class GlobalSettingsDialog extends javax.swing.JDialog {
     private final MainFrame parent;
     private final JTextField stardewPathTextField;
     private final JTextField editorPathTextField;
+    private final JTextField modsPathTextField;
     private final JFileChooser stardewPathChooser;
     private final JFileChooser editorPathChooser;
+    private final JFileChooser modsPathChooser;
 
     private final JButton saveButton;
     private final JButton cancelButton;
@@ -32,7 +35,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         this.stardewPathTextField = new JTextField(50);
         JButton stardewPathBrowseButton = new JButton("Select");
 
-        FileFilter smpiPathFileFilter = new FileFilter() {
+        FileFilter stardewPathFileFilter = new FileFilter() {
             @Override
             public boolean accept(File f) {
                 return f.isDirectory() && f.exists();
@@ -44,7 +47,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             }
         };
         this.stardewPathChooser = new JFileChooser();
-        this.stardewPathChooser.setFileFilter(smpiPathFileFilter);
+        this.stardewPathChooser.setFileFilter(stardewPathFileFilter);
         this.stardewPathChooser.setAcceptAllFileFilterUsed(false);
         this.stardewPathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.stardewPathChooser.addActionListener(a -> {
@@ -79,6 +82,34 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         });
         editorPathBrowseButton.addActionListener(a -> this.editorPathChooser.showOpenDialog(this));
 
+        JLabel modsPathJLabel = new JLabel("Mods Path:");
+        this.modsPathTextField = new JTextField(50);
+        JButton modsPathBrowseButton = new JButton("Select");
+
+        FileFilter modsPathFileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory() && f.exists();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Mods Path";
+            }
+        };
+        this.modsPathChooser = new JFileChooser();
+        this.modsPathChooser.setFileFilter(stardewPathFileFilter);
+        this.modsPathChooser.setAcceptAllFileFilterUsed(false);
+        this.modsPathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        this.modsPathChooser.addActionListener(a -> {
+            if (this.modsPathChooser.getSelectedFile() != null) {
+                this.modsPathTextField.setText(this.modsPathChooser.getSelectedFile().getPath());
+            }
+        });
+        modsPathBrowseButton.addActionListener(a -> this.modsPathChooser.showOpenDialog(this));
+
+
+
         this.saveButton = new JButton("Save");
         this.cancelButton = new JButton("Cancel");
 
@@ -91,6 +122,10 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super.add(editorPathJLabel);
         super.add(editorPathTextField, "span 3");
         super.add(editorPathBrowseButton, "wrap");
+
+        super.add(modsPathJLabel);
+        super.add(modsPathTextField, "span 3");
+        super.add(modsPathBrowseButton, "wrap");
 
         super.add(saveButton, "skip 1, span 2");
         super.add(cancelButton, "span 2");
@@ -138,10 +173,12 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         if (stardewGogLocation.exists()) {
             applicationSettingsModel.setStardewPath(stardewGogLocation.getPath());
             this.stardewPathTextField.setText(stardewGogLocation.getPath());
+            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
         } else if (stardewSteamLocation.exists()) {
             applicationSettingsModel.setEditorPath(stardewSteamLocation.getPath());
             this.stardewPathTextField.setText(stardewSteamLocation.getPath());
+            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
         }
 
@@ -158,29 +195,59 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         if (!this.applicationSettingsModel.getStardewPath().isBlank()) {
             this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
                     PopupConfigurationModel.builder()
-                            .title("Stardew Valley detected automatically")
-                            .message("Path to Stardew Valley detected automatically. Please Verify.")
+                            .title("Stardew Valley (and mods) detected automatically")
+                            .message("Path to Stardew Valley (and mods) detected automatically. Please Verify.")
                         .build()
             ));
         }
 
         this.saveButton.addActionListener(a -> {
-            if (!this.applicationSettingsModel.getStardewPath().isBlank()) {
-                super.dispose();
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel));
-            } else {
+            this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
+            this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+            this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
+
+            if (this.applicationSettingsModel.getStardewPath() == null || this.applicationSettingsModel.getStardewPath().isBlank()) {
                 this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
                         PopupConfigurationModel.builder()
                                 .title("Path to Stardew Valley required")
                                 .message("Path to Stardew Valley required.")
                                 .build()
                 ));
+                return;
+            } else if (this.applicationSettingsModel.getEditorPath() == null || this.applicationSettingsModel.getEditorPath().isBlank()){
+                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                        PopupConfigurationModel.builder()
+                                .title("Path to editor required")
+                                .message("Path to editor required.")
+                                .build()
+                ));
+                return;
+            } else if (this.applicationSettingsModel.getModsPath() == null || this.applicationSettingsModel.getModsPath().isBlank()) {
+                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                        PopupConfigurationModel.builder()
+                                .title("Path to mods required")
+                                .message("Path to mods required.")
+                                .build()
+                ));
+                return;
             }
+
+            var editorFile = new File(this.applicationSettingsModel.getEditorPath());
+            if (!editorFile.isFile() || !editorFile.getName().toLowerCase().endsWith(".exe")) {
+                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                        PopupConfigurationModel.builder()
+                                .title("Path to editor must be an executable")
+                                .message("Path to editor must be an executable.")
+                                .build()
+                ));
+                return;
+            }
+
+            super.dispose();
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel));
+
         });
         this.cancelButton.setEnabled(false);
     }
 
-
-
-    //this.applicationEventPublisher.publishEvent(new MainTabbedPane.MainProfileTabsAddProfileEvent(this, ProfileSettingsModel.builder().name("Imported").mods(Collections.emptyList()).build()));
 }

@@ -15,7 +15,6 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private final JButton cancelButton;
 
     private ApplicationSettingsModel applicationSettingsModel;
-    private Integer profileIndex;
 
     public ProfileSettingsDialog(MainFrame parent) {
         super(parent, "Profile Settings", true);
@@ -38,13 +37,12 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         super.add(cancelButton);
     }
 
-    public void loadSettings(ApplicationSettingsModel applicationSettingsModel, Integer profileIndex) {
-        if (applicationSettingsModel == null || applicationSettingsModel.getProfileSettings().isEmpty()) {
+    public void loadSettings(ApplicationSettingsModel applicationSettingsModel) {
+        this.applicationSettingsModel = applicationSettingsModel;
+        if (this.applicationSettingsModel == null || this.applicationSettingsModel.getProfileSettings().isEmpty()) {
             this.setupForFirstTime();
             return;
         }
-        this.applicationSettingsModel = applicationSettingsModel;
-        this.profileIndex = profileIndex;
 
 
     }
@@ -53,5 +51,9 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         this.cancelButton.setEnabled(false);
         this.deleteButton.setEnabled(false);
         this.profileNameTextField.setText("Initial Profile");
+
+        this.saveButton.addActionListener(e -> {
+
+        });
     }
 }

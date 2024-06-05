@@ -1,6 +1,7 @@
 package name.benshepley.SVMM3.model.application.settings;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,8 @@ public class ApplicationSettingsModel {
     private String version;
     private String stardewPath;
     private String editorPath;
+    private String modsPath;
 
+    @JsonIgnore
     private List<ProfileSettingsModel> profileSettings = new ArrayList<>();
 }
