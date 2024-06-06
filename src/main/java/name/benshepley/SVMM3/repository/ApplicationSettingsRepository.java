@@ -8,7 +8,6 @@ import jakarta.annotation.PostConstruct;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -19,9 +18,6 @@ import java.nio.file.Paths;
 @Repository
 public class ApplicationSettingsRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationSettingsRepository.class);
-
-    @Value("${LOCALAPPDATA}")
-    private String APPLICATION_SETTINGS_PATH;
 
     private ObjectMapper objectMapper;
 
@@ -36,7 +32,13 @@ public class ApplicationSettingsRepository {
     public ApplicationSettingsModel restoreApplicationSettings() {
         ApplicationSettingsModel applicationSettingsModel = null;
         try {
-            applicationSettingsModel = this.objectMapper.readValue(new File(APPLICATION_SETTINGS_PATH + "\\SVMM3\\" + "applications-settings.json"), ApplicationSettingsModel.class);
+            File applictionSettingsFile = new File("applications-settings.json");
+            if (!applictionSettingsFile.exists()) {
+                applicationSettingsModel = new ApplicationSettingsModel();
+                String applicationSettings = this.objectMapper.writeValueAsString(applicationSettingsModel);
+                Files.writeString(applictionSettingsFile.toPath(), applicationSettings);
+            }
+            applicationSettingsModel = this.objectMapper.readValue(applictionSettingsFile, ApplicationSettingsModel.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -45,8 +47,9 @@ public class ApplicationSettingsRepository {
 
     public void storeApplicationSettings(ApplicationSettingsModel applicationSettingsModel) {
         try {
+            File applictionSettingsFile = new File("applications-settings.json");
             String applicationSettings = this.objectMapper.writeValueAsString(applicationSettingsModel);
-            Files.writeString(Paths.get(APPLICATION_SETTINGS_PATH + "\\SVMM3\\" + "applications-settings.json"), applicationSettings);
+            Files.writeString(applictionSettingsFile.toPath(), applicationSettings);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }

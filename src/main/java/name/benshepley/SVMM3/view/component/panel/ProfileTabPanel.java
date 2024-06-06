@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.view.component;
+package name.benshepley.SVMM3.view.component.panel;
 
 import name.benshepley.SVMM3.controller.MainController;
 import name.benshepley.SVMM3.model.application.settings.ModSettingsModel;
@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class ProfileTab extends JPanel {
+public class ProfileTabPanel extends JPanel {
     // Spring Beans:
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ProfileSettingsModel profileSettingsModel;
@@ -29,7 +29,7 @@ public class ProfileTab extends JPanel {
     private final JButton deleteModButton;
 
 
-    public ProfileTab(ApplicationEventPublisher applicationEventPublisher, ProfileSettingsModel profileSettingsModel) {
+    public ProfileTabPanel(ApplicationEventPublisher applicationEventPublisher, ProfileSettingsModel profileSettingsModel) {
         super(new MigLayout("wrap 4", "[grow, fill]", "[grow, fill]"));
         super.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 

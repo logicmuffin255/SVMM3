@@ -15,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationSettingsModel {
-    private String version;
-    private String stardewPath;
-    private String editorPath;
-    private String modsPath;
+    private String version = "";
+    private String stardewPath = "";
+    private String editorPath = "";
+    private String modsPath = "";
 
     @JsonIgnore
     private List<ProfileSettingsModel> profileSettings = new ArrayList<>();

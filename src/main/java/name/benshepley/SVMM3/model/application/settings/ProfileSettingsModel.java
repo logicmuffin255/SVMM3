@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileSettingsModel {
-    private String name;
-    private List<ModSettingsModel> enabledMods;
-    private List<ModSettingsModel> disabledMods;
+    private String name = "";
+    private List<ModSettingsModel> enabledMods = Collections.emptyList();
+    private List<ModSettingsModel> disabledMods = Collections.emptyList();
 }

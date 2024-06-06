@@ -25,7 +25,7 @@ public class StartupManager {
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
         ApplicationSettingsModel applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
-        if (applicationSettingsModel == null) {
+        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
             this.applicationEventPublisher.publishEvent(new MainFrame.ShowPopupDialogEvent(this,
                     PopupConfigurationModel.builder()
                             .title("First Time Setup")
@@ -33,7 +33,7 @@ public class StartupManager {
                             .okButtonActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    StartupManager.this.applicationEventPublisher.publishEvent(new MainFrame.ShowGlobalSettingsDialogEvent(this, null));
+                                    StartupManager.this.applicationEventPublisher.publishEvent(new MainFrame.ShowGlobalSettingsDialogEvent(this, applicationSettingsModel));
                                 }
                             })
                         .build()));

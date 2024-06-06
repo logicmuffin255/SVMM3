@@ -134,31 +134,38 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
     }
 
     public void loadSettings(ApplicationSettingsModel applicationSettingsModel) {
-        /* Setup Buttons: */
-        this.cancelButton.addActionListener(a -> super.dispose());
-        this.saveButton.addActionListener(a -> {
-            if (this.validateForm()) {
-                super.dispose();
-                this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
-                this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel, null));
-            }
-        });
-
-        if (applicationSettingsModel == null) {
-            this.applicationSettingsModel = new ApplicationSettingsModel();
+        this.applicationSettingsModel = applicationSettingsModel;
+        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
+            /* Setup Buttons: */
+            this.cancelButton.setEnabled(false);
+            this.saveButton.addActionListener(a -> {
+                if (this.validateForm()) {
+                    super.dispose();
+                    this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
+                    this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel, null));
+                }
+            });
             this.setupForFirstTime();
         } else {
+            /* Setup Buttons: */
+            this.cancelButton.addActionListener(a -> super.dispose());
+            this.saveButton.addActionListener(a -> {
+                if (this.validateForm()) {
+                    super.dispose();
+                    this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
+                }
+            });
+
             this.applicationSettingsModel = applicationSettingsModel;
             this.stardewPathTextField.setText(applicationSettingsModel.getStardewPath());
             this.editorPathTextField.setText(applicationSettingsModel.getEditorPath());
+            this.modsPathTextField.setText(applicationSettingsModel.getModsPath());
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
             this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
         }
     }
 
     public void setupForFirstTime() {
-        this.cancelButton.setEnabled(false);
-
         final var stardewGogLocation = new File("C:\\Program Files (x86)\\GOG Galaxy\\Games\\Stardew Valley\\");
         final var stardewSteamLocation = new File("C:\\Program Files (x86)\\Steam\\steamapps\\Common\\Stardew Valley\\");
         final var editorNotepadPlusPLusLocation = new File("C:\\Program Files\\Notepad++\\notepad++.exe");
@@ -168,22 +175,22 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.applicationSettingsModel.setStardewPath(stardewGogLocation.getPath());
             this.stardewPathTextField.setText(stardewGogLocation.getPath());
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
-            this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
+            this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         } else if (stardewSteamLocation.exists()) {
             this.applicationSettingsModel.setEditorPath(stardewSteamLocation.getPath());
             this.stardewPathTextField.setText(stardewSteamLocation.getPath());
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
-            this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
+            this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         }
 
         if (editorNotepadPlusPLusLocation.exists()) {
             this.applicationSettingsModel.setEditorPath(editorNotepadPlusPLusLocation.getPath());
             this.editorPathTextField.setText(editorNotepadPlusPLusLocation.getPath());
-            this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
+            this.editorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getEditorPath()));
         } else if (editorWindowsNotepadLocation.exists()) {
             applicationSettingsModel.setEditorPath(editorWindowsNotepadLocation.getPath());
             this.editorPathTextField.setText(editorWindowsNotepadLocation.getPath());
-            this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
+            this.editorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getEditorPath()));
         }
 
         if (!this.applicationSettingsModel.getStardewPath().isBlank()) {

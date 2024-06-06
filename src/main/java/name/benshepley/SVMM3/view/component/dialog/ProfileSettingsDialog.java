@@ -1,5 +1,7 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
+import name.benshepley.SVMM3.controller.MainController;
+import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.MainFrame;
@@ -20,7 +22,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
 
     public ProfileSettingsDialog(MainFrame parent) {
         super(parent, "Profile Settings", true);
-        super.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.parent = parent;
 
         /* Setup UI Components: */
@@ -42,11 +44,25 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     }
 
     public void loadSettings(ApplicationSettingsModel applicationSettingsModel, ProfileSettingsModel profileSettingsModel) {
-        this.applicationSettingsModel = applicationSettingsModel;
-        this.profileSettingsModel = profileSettingsModel;
-        if (this.profileSettingsModel == null) {
-            this.setupForFirstTime();
+        /* Setup Buttons: */
+        this.cancelButton.addActionListener(a -> super.dispose());
+        this.saveButton.addActionListener(a -> {
+            if (this.validateForm()) {
+                super.dispose();
+            }
+        });
+        this.deleteButton.addActionListener(a -> {
 
+        });
+
+        this.applicationSettingsModel = applicationSettingsModel;
+
+        if (this.profileSettingsModel == null) {
+            this.profileSettingsModel = new ProfileSettingsModel();
+            this.setupForFirstTime();
+        } else {
+            this.profileSettingsModel = profileSettingsModel;
+            this.profileNameTextField.setText(this.profileSettingsModel.getName());
         }
 
 
@@ -61,5 +77,18 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         this.saveButton.addActionListener(e -> {
 
         });
+    }
+
+    private boolean validateForm() {
+        if (this.profileSettingsModel.getName().isBlank()) {
+            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+                    PopupConfigurationModel.builder()
+                            .title("Profile Name Required")
+                            .message("Profile name is required.")
+                            .build()
+            ));
+            return false;
+        }
+        return true;
     }
 }
