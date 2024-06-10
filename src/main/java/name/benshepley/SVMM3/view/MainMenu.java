@@ -3,8 +3,8 @@ package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
 import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
+import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -12,13 +12,13 @@ import javax.swing.*;
 @Component
 public class MainMenu extends JMenuBar {
     // Spring Beans:
+    private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
     private final ApplicationSettingsRepository applicationSettingsRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     // Constructor:
     @Autowired
-    public MainMenu(ApplicationEventPublisher applicationEventPublisher, ApplicationSettingsRepository applicationSettingsRepository) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    public MainMenu(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsRepository applicationSettingsRepository) {
+        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
         this.applicationSettingsRepository = applicationSettingsRepository;
     }
 
@@ -28,7 +28,7 @@ public class MainMenu extends JMenuBar {
         JMenu applicationMenu = new JMenu("Application");
 
         JMenuItem applicationSettingsMenuItem = new JMenuItem("Application Settings");
-        applicationSettingsMenuItem.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainFrame.ShowGlobalSettingsDialogEvent(this, this.applicationSettingsRepository.restoreApplicationSettings())));
+        applicationSettingsMenuItem.addActionListener(a -> this.uiComponentSpringPrototypeFactory.showGlobalSettingsDialog(this.applicationSettingsRepository.restoreApplicationSettings()));
         applicationMenu.add(applicationSettingsMenuItem);
 
         JMenuItem fileExitItem = new JMenuItem("Exit");

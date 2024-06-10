@@ -1,21 +1,39 @@
 package name.benshepley.SVMM3.view.component.panel;
 
-import name.benshepley.SVMM3.controller.MainController;
+import name.benshepley.SVMM3.controller.ApplicationSettingsController;
+import name.benshepley.SVMM3.controller.OperatingSystemController;
+import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.settings.ModSettingsModel;
 import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileTabPanel extends JPanel {
-    // Spring Beans:
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final ProfileSettingsModel profileSettingsModel;
+    /* Spring Beans: */
+    private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
+    private final ApplicationSettingsController applicationSettingsController;
+    private final OperatingSystemController operatingSystemController;
+
+    /* Properties: */
+    @Value("${application.stardew.filename}")
+    private String stardewFilename;
+
+    @Value("${application.stardew.smpi.filename}")
+    private String smapiFilename;
 
     // Components:
     private final JTable modsTable;
@@ -28,13 +46,20 @@ public class ProfileTabPanel extends JPanel {
     private final JButton pasteModButton;
     private final JButton deleteModButton;
 
+    private final JButton playStardewWithSMAPIButton;
+    private final JButton playStardewWithoutSMAPIButton;
 
-    public ProfileTabPanel(ApplicationEventPublisher applicationEventPublisher, ProfileSettingsModel profileSettingsModel) {
+    // Model:
+    private ProfileSettingsModel profileSettingsModel;
+
+    @Autowired
+    public ProfileTabPanel(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController) {
         super(new MigLayout("wrap 4", "[grow, fill]", "[grow, fill]"));
         super.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.profileSettingsModel = profileSettingsModel;
+        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
+        this.applicationSettingsController = applicationSettingsController;
+        this.operatingSystemController = operatingSystemController;
 
         this.configureModButton = new JButton("Edit Mod Configuration");
         this.configureModButton.setEnabled(false);
@@ -51,12 +76,9 @@ public class ProfileTabPanel extends JPanel {
         this.deleteModButton = new JButton("Delete Mod(s)");
         this.deleteModButton.setEnabled(false);
 
-        Object[][] data = Stream.concat(profileSettingsModel.getEnabledMods().stream(), profileSettingsModel.getDisabledMods().stream())
-                .sorted(Comparator.comparing(ModSettingsModel::getName))
-                .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
-                .toArray(Object[][]::new);
+        Object[][] placeholderData = new Object[][]{};
 
-        DefaultTableModel model = new DefaultTableModel(data, new Object[]{ "Enabled", "Name", "Version", "Notes" }) {
+        DefaultTableModel model = new DefaultTableModel(placeholderData, new Object[]{ "Enabled", "Name", "Version", "Notes" }) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 if (columnIndex == 0) {
@@ -85,10 +107,8 @@ public class ProfileTabPanel extends JPanel {
             }
         });
 
-        JButton playStardewWithSMAPIButton = new JButton("Play Stardew (With SMAPI)");
-        playStardewWithSMAPIButton.addActionListener(a -> this.applicationEventPublisher.publishEvent(new MainController.ExecuteProcessEvent(this, "")));
-
-        JButton playStardewWithoutSMAPIButton = new JButton("Play Stardew (Without SMAPI)");
+        this.playStardewWithSMAPIButton = new JButton("Play Stardew (With SMAPI)");
+        this.playStardewWithoutSMAPIButton = new JButton("Play Stardew (Without SMAPI)");
 
         super.add(modsTableScrollPane, "span 3 7");
 
@@ -102,8 +122,22 @@ public class ProfileTabPanel extends JPanel {
 
         super.add(playStardewWithSMAPIButton, "span 2");
         super.add(playStardewWithoutSMAPIButton, "span 2, wrap");
-
-
     }
+
+    public void loadPanel(ProfileSettingsModel profileSettingsModel) {
+        this.profileSettingsModel = profileSettingsModel;
+
+        Object[][] data = Stream.concat(profileSettingsModel.getEnabledMods().stream(), profileSettingsModel.getDisabledMods().stream())
+                .sorted(Comparator.comparing(ModSettingsModel::getName))
+                .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
+                .toArray(Object[][]::new);
+
+        ApplicationSettingsModel applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
+
+        this.playStardewWithSMAPIButton.addActionListener(a -> this.operatingSystemController.executeProcess(Path.of(applicationSettingsModel.getStardewPath() + "\\" + this.smapiFilename)));
+        this.playStardewWithoutSMAPIButton.addActionListener(a -> this.operatingSystemController.executeProcess(Path.of(applicationSettingsModel.getStardewPath() + "\\" + this.stardewFilename)));
+    }
+
+
 
 }

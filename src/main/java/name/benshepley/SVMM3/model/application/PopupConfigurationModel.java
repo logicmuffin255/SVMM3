@@ -1,6 +1,5 @@
 package name.benshepley.SVMM3.model.application;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,9 +7,24 @@ import java.awt.event.ActionListener;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class PopupConfigurationModel {
-    private String title;
-    private String message;
-    private ActionListener okButtonActionListener;
+    @Builder.Default
+    private Integer positionX = 200;
+
+    @Builder.Default
+    private Integer positionY = 400;
+
+    @Builder.Default
+    private Integer width = 400;
+
+    @Builder.Default
+    private Integer height = 200;
+
+    @Builder.Default
+    private String title = "";
+
+    @Builder.Default
+    private String message = "";
+
+    private ActionListener okButtonActionListener ;
 }

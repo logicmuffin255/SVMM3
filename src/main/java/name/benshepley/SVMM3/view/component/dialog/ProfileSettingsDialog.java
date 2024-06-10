@@ -1,18 +1,27 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
-import name.benshepley.SVMM3.controller.MainController;
+import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.MainFrame;
+import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileSettingsDialog extends javax.swing.JDialog {
-    private final MainFrame parent;
-    private final JTextField profileNameTextField;
+    /* Spring Beans: */
+    private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
 
+    /* Swing Components: */
+    private final JTextField profileNameTextField;
     private final JButton saveButton;
     private final JButton deleteButton;
     private final JButton cancelButton;
@@ -20,10 +29,12 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private ApplicationSettingsModel applicationSettingsModel;
     private ProfileSettingsModel profileSettingsModel;
 
-    public ProfileSettingsDialog(MainFrame parent) {
+    @Autowired
+    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController) {
         super(parent, "Profile Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.parent = parent;
+
+        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
 
         /* Setup UI Components: */
         JLabel profileNameLabel = new JLabel("Profile Name");
@@ -43,7 +54,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         super.add(cancelButton);
     }
 
-    public void loadSettings(ApplicationSettingsModel applicationSettingsModel, ProfileSettingsModel profileSettingsModel) {
+    public void loadSettings(ProfileSettingsModel profileSettingsModel) {
         /* Setup Buttons: */
         this.cancelButton.addActionListener(a -> super.dispose());
         this.saveButton.addActionListener(a -> {
@@ -55,8 +66,6 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
 
         });
 
-        this.applicationSettingsModel = applicationSettingsModel;
-
         if (this.profileSettingsModel == null) {
             this.profileSettingsModel = new ProfileSettingsModel();
             this.setupForFirstTime();
@@ -64,9 +73,6 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
             this.profileSettingsModel = profileSettingsModel;
             this.profileNameTextField.setText(this.profileSettingsModel.getName());
         }
-
-
-
     }
 
     public void setupForFirstTime() {
@@ -80,13 +86,15 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     }
 
     private boolean validateForm() {
+        this.profileSettingsModel.setName(this.profileNameTextField.getText());
+
         if (this.profileSettingsModel.getName().isBlank()) {
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Profile Name Required")
                             .message("Profile name is required.")
                             .build()
-            ));
+            );
             return false;
         }
         return true;

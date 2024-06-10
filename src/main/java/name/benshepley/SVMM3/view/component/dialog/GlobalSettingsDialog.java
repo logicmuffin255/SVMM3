@@ -1,17 +1,30 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
-import name.benshepley.SVMM3.controller.MainController;
+import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.view.MainFrame;
+import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
+
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GlobalSettingsDialog extends javax.swing.JDialog {
-    private final MainFrame parent;
+
+    /* Spring Beans: */
+    private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
+    private final ApplicationSettingsController applicationSettingsController;
+
+
+    /* Swing Components: */
     private final JTextField stardewPathTextField;
     private final JTextField editorPathTextField;
     private final JTextField modsPathTextField;
@@ -22,12 +35,15 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
     private final JButton saveButton;
     private final JButton cancelButton;
 
+    /* Model: */
     private ApplicationSettingsModel applicationSettingsModel;
 
-    public GlobalSettingsDialog(MainFrame parent) {
+    public GlobalSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController) {
         super(parent,"Application Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.parent = parent;
+
+        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
+        this.applicationSettingsController = applicationSettingsController;
 
         /* Setup UI Components: */
         JLabel stardewPathJLabel = new JLabel("Stardew Valley Path:");
@@ -141,8 +157,8 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.saveButton.addActionListener(a -> {
                 if (this.validateForm()) {
                     super.dispose();
-                    this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
-                    this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowProfileSettingsDialogEvent(this, this.applicationSettingsModel, null));
+                    this.applicationSettingsController.storeApplicationSettings(this.applicationSettingsModel);
+                    this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(null);
                 }
             });
             this.setupForFirstTime();
@@ -152,7 +168,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.saveButton.addActionListener(a -> {
                 if (this.validateForm()) {
                     super.dispose();
-                    this.parent.getApplicationEventPublisher().publishEvent(new MainController.StoreApplicationSettingsEvent(this, this.applicationSettingsModel));
+                    this.applicationSettingsController.storeApplicationSettings(this.applicationSettingsModel);
                 }
             });
 
@@ -194,12 +210,12 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         }
 
         if (!this.applicationSettingsModel.getStardewPath().isBlank()) {
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Stardew Valley (and mods) detected automatically")
                             .message("Path to Stardew Valley, an editor, and mods were detected automatically. Please Verify.")
                         .build()
-            ));
+            );
         }
     }
 
@@ -209,39 +225,39 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
 
         if (this.applicationSettingsModel.getStardewPath() == null || this.applicationSettingsModel.getStardewPath().isBlank()) {
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Path to Stardew Valley required")
                             .message("Path to Stardew Valley required.")
                             .build()
-            ));
+            );
             return false;
         } else if (this.applicationSettingsModel.getEditorPath() == null || this.applicationSettingsModel.getEditorPath().isBlank()){
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Path to editor required")
                             .message("Path to editor required.")
                             .build()
-            ));
+            );
             return false;
         } else if (this.applicationSettingsModel.getModsPath() == null || this.applicationSettingsModel.getModsPath().isBlank()) {
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Path to mods required")
                             .message("Path to mods required.")
                             .build()
-            ));
+            );
             return false;
         }
 
         var editorFile = new File(this.applicationSettingsModel.getEditorPath());
         if (!editorFile.isFile() || !editorFile.getName().toLowerCase().endsWith(".exe")) {
-            this.parent.getApplicationEventPublisher().publishEvent(new MainFrame.ShowPopupDialogEvent(this,
+            this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Path to editor must be an executable")
                             .message("Path to editor must be an executable.")
                             .build()
-            ));
+            );
             return false;
         }
 

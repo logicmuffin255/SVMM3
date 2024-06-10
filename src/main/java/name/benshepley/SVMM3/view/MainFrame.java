@@ -2,92 +2,35 @@ package name.benshepley.SVMM3.view;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
-import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
-import name.benshepley.SVMM3.view.component.dialog.GlobalSettingsDialog;
-import name.benshepley.SVMM3.view.component.dialog.PopupDialog;
-import name.benshepley.SVMM3.view.component.dialog.ProfileSettingsDialog;
+import name.benshepley.SVMM3.controller.ApplicationSettingsController;
+import name.benshepley.SVMM3.controller.OperatingSystemController;
+import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
-
 @Getter
 @Component
 public class MainFrame extends JFrame  {
     // Spring Beans:
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final MainMenu mainMenu;
-    private final MainTabbedPane mainTabbedPane;
+    public final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
 
-    // Events:
-    @Getter
-    public static class ShowPopupDialogEvent extends ApplicationEvent {
-        private final PopupConfigurationModel popupConfigurationModel;
-        public ShowPopupDialogEvent(Object source, PopupConfigurationModel popupConfigurationModel) {
-            super(source);
-            this.popupConfigurationModel = popupConfigurationModel;
-        }
-    }
+    public final ApplicationSettingsController applicationSettingsController;
+    public final OperatingSystemController operatingSystemController;
 
-    @Getter
-    public static class ShowGlobalSettingsDialogEvent extends ApplicationEvent {
-        private final ApplicationSettingsModel applicationSettingsModel;
-        public ShowGlobalSettingsDialogEvent(Object source, ApplicationSettingsModel applicationSettingsModel) {
-            super(source);
-            this.applicationSettingsModel = applicationSettingsModel;
-        }
-    }
-
-    @Getter
-    public static class ShowProfileSettingsDialogEvent extends ApplicationEvent {
-        private final ApplicationSettingsModel applicationSettingsModel;
-        private final ProfileSettingsModel profileSettingsModel;
-        public ShowProfileSettingsDialogEvent(Object source, ApplicationSettingsModel applicationSettingsModel, ProfileSettingsModel profileSettingsModel) {
-            super(source);
-            this.applicationSettingsModel = applicationSettingsModel;
-            this.profileSettingsModel = profileSettingsModel;
-        }
-    }
-
-    // Listeners:
-    @EventListener
-    public void onApplicationEvent(ShowPopupDialogEvent showPopupDialogEvent) {
-        PopupDialog popupDialog = new PopupDialog(this, showPopupDialogEvent.getPopupConfigurationModel());
-        popupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        popupDialog.setSize(400, 300);
-        popupDialog.setLocation((this.getWidth() - popupDialog.getWidth()) / 2, (this.getHeight() - popupDialog.getHeight()) / 2);
-        popupDialog.setVisible(true);
-    }
-
-    @EventListener
-    public void onApplicationEvent(ShowGlobalSettingsDialogEvent showGlobalSettingsDialogEvent) {
-        GlobalSettingsDialog globalSettingsDialog = new GlobalSettingsDialog(this);
-        globalSettingsDialog.loadSettings(showGlobalSettingsDialogEvent.getApplicationSettingsModel());
-        globalSettingsDialog.pack();
-        globalSettingsDialog.setVisible(true);
-    }
-
-    @EventListener
-    public void onApplicationEvent(ShowProfileSettingsDialogEvent showProfileSettingsDialogEvent) {
-        ProfileSettingsDialog profileSettingsDialog = new ProfileSettingsDialog(this);
-        profileSettingsDialog.loadSettings(showProfileSettingsDialogEvent.applicationSettingsModel, showProfileSettingsDialogEvent.profileSettingsModel);
-        profileSettingsDialog.pack();
-        profileSettingsDialog.setVisible(true);
-    }
-
+    public final MainMenu mainMenu;
+    public final MainTabbedPane mainTabbedPane;
 
     @Autowired
-    public MainFrame(ApplicationEventPublisher applicationEventPublisher, MainMenu mainMenu, MainTabbedPane mainTabbedPane) {
+    public MainFrame(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController, MainMenu mainMenu, MainTabbedPane mainTabbedPane) {
         super("Stardew Mod Manager 3");
+        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
 
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.applicationSettingsController = applicationSettingsController;
+        this.operatingSystemController = operatingSystemController;
+
         this.mainMenu = mainMenu;
         this.mainTabbedPane = mainTabbedPane;
     }
@@ -102,7 +45,6 @@ public class MainFrame extends JFrame  {
         super.add(this.mainTabbedPane, BorderLayout.CENTER);
 
         super.setVisible(true);
-
     }
 
 }
