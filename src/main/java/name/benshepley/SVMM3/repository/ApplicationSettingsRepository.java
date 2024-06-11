@@ -36,8 +36,9 @@ public class ApplicationSettingsRepository {
                 applicationSettingsModel = new ApplicationSettingsModel();
                 String applicationSettings = this.objectMapper.writeValueAsString(applicationSettingsModel);
                 Files.writeString(applictionSettingsFile.toPath(), applicationSettings);
+            } else {
+                applicationSettingsModel = this.objectMapper.readValue(applictionSettingsFile, ApplicationSettingsModel.class);
             }
-            applicationSettingsModel = this.objectMapper.readValue(applictionSettingsFile, ApplicationSettingsModel.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }

@@ -9,10 +9,10 @@ import java.awt.event.ActionListener;
 @Builder
 public class PopupConfigurationModel {
     @Builder.Default
-    private Integer positionX = 200;
+    private Integer positionX = 150;
 
     @Builder.Default
-    private Integer positionY = 400;
+    private Integer positionY = 250;
 
     @Builder.Default
     private Integer width = 400;

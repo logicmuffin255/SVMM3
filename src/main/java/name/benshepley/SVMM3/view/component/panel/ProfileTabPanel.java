@@ -2,9 +2,9 @@ package name.benshepley.SVMM3.view.component.panel;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
+import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.filesystem.ModFileSystemModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
-import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +51,7 @@ public class ProfileTabPanel extends JPanel {
 
     // Model:
     private ProfileFileSystemModel profileFileSystemModel;
+    private Object[] modsTableColumns = new Object[]{ "Enabled", "Name", "Version", "Notes" };
 
     @Autowired
     public ProfileTabPanel(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController) {
@@ -77,17 +78,7 @@ public class ProfileTabPanel extends JPanel {
         this.deleteModButton.setEnabled(false);
 
         Object[][] placeholderData = new Object[][]{};
-
-        DefaultTableModel model = new DefaultTableModel(placeholderData, new Object[]{ "Enabled", "Name", "Version", "Notes" }) {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Boolean.class;
-                } else {
-                    return String.class;
-                }
-            }
-        };
+        DefaultTableModel model = new DefaultTableModel(placeholderData, modsTableColumns);
 
         this.modsTable = new JTable(model);
         JScrollPane modsTableScrollPane = new JScrollPane(this.modsTable);
@@ -131,6 +122,17 @@ public class ProfileTabPanel extends JPanel {
                 .sorted(Comparator.comparing(ModFileSystemModel::getName))
                 .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
                 .toArray(Object[][]::new);
+
+        this.modsTable.setModel(new DefaultTableModel(data, modsTableColumns) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class;
+                } else {
+                    return String.class;
+                }
+            }
+        });
 
         ApplicationSettingsModel applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
 

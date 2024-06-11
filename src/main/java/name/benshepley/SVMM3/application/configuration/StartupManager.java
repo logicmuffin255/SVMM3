@@ -1,6 +1,5 @@
 package name.benshepley.SVMM3.application.configuration;
 
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
 
 
 @Component

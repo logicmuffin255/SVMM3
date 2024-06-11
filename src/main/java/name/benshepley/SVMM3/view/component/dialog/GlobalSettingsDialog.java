@@ -3,6 +3,7 @@ package name.benshepley.SVMM3.view.component.dialog;
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
@@ -155,10 +156,14 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             /* Setup Buttons: */
             this.cancelButton.setEnabled(false);
             this.saveButton.addActionListener(a -> {
+                this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
+                this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+                this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
+
                 if (this.validateForm()) {
                     super.dispose();
                     this.applicationSettingsController.storeApplicationSettings(this.applicationSettingsModel);
-                    this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(null);
+                    this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(new ProfileFileSystemModel());
                 }
             });
             this.setupForFirstTime();
@@ -166,6 +171,10 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             /* Setup Buttons: */
             this.cancelButton.addActionListener(a -> super.dispose());
             this.saveButton.addActionListener(a -> {
+                this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
+                this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+                this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
+
                 if (this.validateForm()) {
                     super.dispose();
                     this.applicationSettingsController.storeApplicationSettings(this.applicationSettingsModel);
@@ -220,10 +229,6 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
     }
 
     private boolean validateForm() {
-        this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
-        this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
-        this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
-
         if (this.applicationSettingsModel.getStardewPath() == null || this.applicationSettingsModel.getStardewPath().isBlank()) {
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()

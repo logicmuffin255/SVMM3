@@ -1,9 +1,9 @@
 package name.benshepley.SVMM3.view.service;
 
 
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.view.component.dialog.GlobalSettingsDialog;
 import name.benshepley.SVMM3.view.component.dialog.PopupDialog;
 import name.benshepley.SVMM3.view.component.dialog.ProfileSettingsDialog;
