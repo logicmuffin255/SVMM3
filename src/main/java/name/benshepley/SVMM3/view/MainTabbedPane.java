@@ -1,7 +1,9 @@
 package name.benshepley.SVMM3.view;
 
 
+import name.benshepley.SVMM3.model.application.event.SyncWithFileSystemEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -11,10 +13,13 @@ public class MainTabbedPane extends JTabbedPane {
  //   private final ApplicationEventPublisher applicationEventPublisher;
 
 
+    // Listeners:
+    @EventListener
+    public void onApplicationEvent(SyncWithFileSystemEvent syncWithFileSystemEvent) {
+        /* Fill in profiles, etc. */
+    }
 
 
-
-    @Autowired
     public MainTabbedPane() {
         super.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 

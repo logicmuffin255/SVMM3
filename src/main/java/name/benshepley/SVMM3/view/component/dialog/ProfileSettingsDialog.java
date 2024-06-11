@@ -1,8 +1,7 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
-import name.benshepley.SVMM3.controller.OperatingSystemController;
-import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
+import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.view.MainFrame;
@@ -14,15 +13,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.io.File;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileSettingsDialog extends javax.swing.JDialog {
     /* Spring Beans: */
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
-    private final ApplicationSettingsController applicationSettingsController;
-    private final OperatingSystemController operatingSystemController;
+    private final ProfileController profileController;
 
     /* Swing Components: */
     private final JTextField profileNameTextField;
@@ -30,17 +27,15 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private final JButton deleteButton;
     private final JButton cancelButton;
 
-    private ApplicationSettingsModel applicationSettingsModel;
     private ProfileFileSystemModel profileFileSystemModel;
 
     @Autowired
-    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController) {
+    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, ProfileController profileController) {
         super(parent, "Profile Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
-        this.applicationSettingsController = applicationSettingsController;
-        this.operatingSystemController = operatingSystemController;
+        this.profileController = profileController;
 
         /* Setup UI Components: */
         JLabel profileNameLabel = new JLabel("Profile Name");
@@ -61,7 +56,6 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     }
 
     public void loadSettings(ProfileFileSystemModel profileFileSystemModel) {
-        this.applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
         this.profileFileSystemModel = profileFileSystemModel;
 
         if (this.profileFileSystemModel.getName().isBlank()) {
@@ -73,10 +67,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
                 this.profileFileSystemModel.setName(this.profileNameTextField.getText());
                 if (this.validateForm()) {
                     super.dispose();
-                    var profileDirectory = new File(this.applicationSettingsModel.getModsPath() + "\\" + this.profileFileSystemModel.getName());
-                    if (!profileDirectory.exists()) {
-                        this.operatingSystemController.createPath(profileDirectory);
-                    }
+                    this.profileController.createProfile(this.profileFileSystemModel.getName());
                 }
             });
 
@@ -88,19 +79,16 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
             this.cancelButton.addActionListener(a -> super.dispose());
             this.deleteButton.addActionListener(a -> {
                 super.dispose();
-                var profileDirectoryFromTextField = new File(this.applicationSettingsModel.getModsPath() + "\\" + this.profileNameTextField.getText());
-                this.operatingSystemController.deletePath(profileDirectoryFromTextField);
+                this.profileController.deleteProfile(this.profileFileSystemModel.getName());
             });
             this.saveButton.addActionListener(a -> {
                 if (this.validateForm()) {
                     super.dispose();
-                    var profileDirectoryFromTextField = new File(this.applicationSettingsModel.getModsPath() + "\\" + this.profileNameTextField.getText());
-                    var profileDirectoryFromModel = new File(this.applicationSettingsModel.getModsPath() + "\\" + this.profileFileSystemModel.getName());
+                    var profileDirectoryFromTextField = this.profileNameTextField.getText();
+                    var profileDirectoryFromModel = this.profileFileSystemModel.getName();
 
-                    if (!profileDirectoryFromTextField.getPath().equals(profileDirectoryFromModel.getPath())) {
-                        if (!profileDirectoryFromTextField.exists() && profileDirectoryFromModel.exists()) {
-                            this.operatingSystemController.movePath(profileDirectoryFromModel, profileDirectoryFromTextField);
-                        }
+                    if (!profileDirectoryFromTextField.equals(profileDirectoryFromModel)) {
+                        this.profileController.moveProfile(profileDirectoryFromModel, profileDirectoryFromTextField);
                     }
                 }
             });

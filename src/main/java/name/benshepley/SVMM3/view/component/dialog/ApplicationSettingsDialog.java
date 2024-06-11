@@ -18,7 +18,7 @@ import java.io.File;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class GlobalSettingsDialog extends javax.swing.JDialog {
+public class ApplicationSettingsDialog extends javax.swing.JDialog {
 
     /* Spring Beans: */
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
@@ -27,10 +27,10 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
 
     /* Swing Components: */
     private final JTextField stardewPathTextField;
-    private final JTextField editorPathTextField;
+    private final JTextField textEditorPathTextField;
     private final JTextField modsPathTextField;
     private final JFileChooser stardewPathChooser;
-    private final JFileChooser editorPathChooser;
+    private final JFileChooser textEditorPathChooser;
     private final JFileChooser modsPathChooser;
 
     private final JButton saveButton;
@@ -39,7 +39,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
     /* Model: */
     private ApplicationSettingsModel applicationSettingsModel;
 
-    public GlobalSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController) {
+    public ApplicationSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController) {
         super(parent,"Application Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -73,11 +73,11 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         });
         stardewPathBrowseButton.addActionListener(a -> this.stardewPathChooser.showOpenDialog(this));
 
-        JLabel editorPathJLabel = new JLabel("Editor Path:");
-        editorPathTextField = new JTextField( 50);
-        JButton editorPathBrowseButton = new JButton("Select");
+        JLabel textEditorPathJLabel = new JLabel("Text Editor Path:");
+        textEditorPathTextField = new JTextField( 50);
+        JButton textEditorPathBrowseButton = new JButton("Select");
 
-        FileFilter editorFileFilter = new FileFilter() {
+        FileFilter textEditorFileFilter = new FileFilter() {
             @Override
             public boolean accept(File f) {
                 return f.isFile() && f.getName().toLowerCase().endsWith(".exe");
@@ -88,15 +88,15 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
                 return "Editor Path:";
             }
         };
-        this.editorPathChooser = new JFileChooser();
-        this.editorPathChooser.setFileFilter(editorFileFilter);
-        this.editorPathChooser.setAcceptAllFileFilterUsed(false);
-        this.editorPathChooser.addActionListener(a -> {
-            if (this.editorPathChooser.getSelectedFile() != null) {
-                this.editorPathTextField.setText(this.editorPathChooser.getSelectedFile().getPath());
+        this.textEditorPathChooser = new JFileChooser();
+        this.textEditorPathChooser.setFileFilter(textEditorFileFilter);
+        this.textEditorPathChooser.setAcceptAllFileFilterUsed(false);
+        this.textEditorPathChooser.addActionListener(a -> {
+            if (this.textEditorPathChooser.getSelectedFile() != null) {
+                this.textEditorPathTextField.setText(this.textEditorPathChooser.getSelectedFile().getPath());
             }
         });
-        editorPathBrowseButton.addActionListener(a -> this.editorPathChooser.showOpenDialog(this));
+        textEditorPathBrowseButton.addActionListener(a -> this.textEditorPathChooser.showOpenDialog(this));
 
         JLabel modsPathJLabel = new JLabel("Mods Path:");
         this.modsPathTextField = new JTextField(50);
@@ -135,9 +135,9 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
         super.add(stardewPathTextField, "span 3");
         super.add(stardewPathBrowseButton, "wrap");
 
-        super.add(editorPathJLabel);
-        super.add(editorPathTextField, "span 3");
-        super.add(editorPathBrowseButton, "wrap");
+        super.add(textEditorPathJLabel);
+        super.add(textEditorPathTextField, "span 3");
+        super.add(textEditorPathBrowseButton, "wrap");
 
         super.add(modsPathJLabel);
         super.add(modsPathTextField, "span 3");
@@ -152,12 +152,12 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
 
     public void loadSettings(ApplicationSettingsModel applicationSettingsModel) {
         this.applicationSettingsModel = applicationSettingsModel;
-        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
+        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getTextEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
             /* Setup Buttons: */
             this.cancelButton.setEnabled(false);
             this.saveButton.addActionListener(a -> {
                 this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
-                this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+                this.applicationSettingsModel.setTextEditorPath(this.textEditorPathTextField.getText());
                 this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
 
                 if (this.validateForm()) {
@@ -172,7 +172,7 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.cancelButton.addActionListener(a -> super.dispose());
             this.saveButton.addActionListener(a -> {
                 this.applicationSettingsModel.setStardewPath(this.stardewPathTextField.getText());
-                this.applicationSettingsModel.setEditorPath(this.editorPathTextField.getText());
+                this.applicationSettingsModel.setTextEditorPath(this.textEditorPathTextField.getText());
                 this.applicationSettingsModel.setModsPath(this.modsPathTextField.getText());
 
                 if (this.validateForm()) {
@@ -183,10 +183,10 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
 
             this.applicationSettingsModel = applicationSettingsModel;
             this.stardewPathTextField.setText(applicationSettingsModel.getStardewPath());
-            this.editorPathTextField.setText(applicationSettingsModel.getEditorPath());
+            this.textEditorPathTextField.setText(applicationSettingsModel.getTextEditorPath());
             this.modsPathTextField.setText(applicationSettingsModel.getModsPath());
             this.stardewPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getStardewPath()));
-            this.editorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getEditorPath()));
+            this.textEditorPathChooser.setCurrentDirectory(new File(applicationSettingsModel.getTextEditorPath()));
         }
     }
 
@@ -202,27 +202,27 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         } else if (stardewSteamLocation.exists()) {
-            this.applicationSettingsModel.setEditorPath(stardewSteamLocation.getPath());
+            this.applicationSettingsModel.setTextEditorPath(stardewSteamLocation.getPath());
             this.stardewPathTextField.setText(stardewSteamLocation.getPath());
             this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
             this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         }
 
         if (editorNotepadPlusPLusLocation.exists()) {
-            this.applicationSettingsModel.setEditorPath(editorNotepadPlusPLusLocation.getPath());
-            this.editorPathTextField.setText(editorNotepadPlusPLusLocation.getPath());
-            this.editorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getEditorPath()));
+            this.applicationSettingsModel.setTextEditorPath(editorNotepadPlusPLusLocation.getPath());
+            this.textEditorPathTextField.setText(editorNotepadPlusPLusLocation.getPath());
+            this.textEditorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getTextEditorPath()));
         } else if (editorWindowsNotepadLocation.exists()) {
-            applicationSettingsModel.setEditorPath(editorWindowsNotepadLocation.getPath());
-            this.editorPathTextField.setText(editorWindowsNotepadLocation.getPath());
-            this.editorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getEditorPath()));
+            applicationSettingsModel.setTextEditorPath(editorWindowsNotepadLocation.getPath());
+            this.textEditorPathTextField.setText(editorWindowsNotepadLocation.getPath());
+            this.textEditorPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getTextEditorPath()));
         }
 
         if (!this.applicationSettingsModel.getStardewPath().isBlank()) {
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Stardew Valley (and mods) detected automatically")
-                            .message("Path to Stardew Valley, an editor, and mods were detected automatically. Please Verify.")
+                            .message("Path to Stardew Valley, a text editor, and mods were detected automatically. Please Verify.")
                         .build()
             );
         }
@@ -237,11 +237,11 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
                             .build()
             );
             return false;
-        } else if (this.applicationSettingsModel.getEditorPath() == null || this.applicationSettingsModel.getEditorPath().isBlank()){
+        } else if (this.applicationSettingsModel.getTextEditorPath() == null || this.applicationSettingsModel.getTextEditorPath().isBlank()){
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
-                            .title("Path to editor required")
-                            .message("Path to editor required.")
+                            .title("Path to text editor required")
+                            .message("Path to text editor required.")
                             .build()
             );
             return false;
@@ -255,12 +255,12 @@ public class GlobalSettingsDialog extends javax.swing.JDialog {
             return false;
         }
 
-        var editorFile = new File(this.applicationSettingsModel.getEditorPath());
+        var editorFile = new File(this.applicationSettingsModel.getTextEditorPath());
         if (!editorFile.isFile() || !editorFile.getName().toLowerCase().endsWith(".exe")) {
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
-                            .title("Path to editor must be an executable")
-                            .message("Path to editor must be an executable.")
+                            .title("Path to text editor must be an executable")
+                            .message("Path to text editor must be an executable.")
                             .build()
             );
             return false;

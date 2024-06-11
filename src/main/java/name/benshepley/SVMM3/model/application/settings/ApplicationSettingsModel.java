@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class ApplicationSettingsModel {
     private String version = "";
     private String stardewPath = "";
-    private String editorPath = "";
+    private String textEditorPath = "";
     private String modsPath = "";
 }

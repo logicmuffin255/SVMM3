@@ -4,7 +4,7 @@ package name.benshepley.SVMM3.view.service;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
-import name.benshepley.SVMM3.view.component.dialog.GlobalSettingsDialog;
+import name.benshepley.SVMM3.view.component.dialog.ApplicationSettingsDialog;
 import name.benshepley.SVMM3.view.component.dialog.PopupDialog;
 import name.benshepley.SVMM3.view.component.dialog.ProfileSettingsDialog;
 import name.benshepley.SVMM3.view.component.panel.ProfileTabPanel;
@@ -21,9 +21,6 @@ public class UiComponentSpringPrototypeFactory implements ApplicationContextAwar
         this.applicationContext = applicationContext;
     }
 
-    //popupDialog.setSize(400, 300);
-    //popupDialog.setLocation((this.mainFrame.getWidth() - popupDialog.getWidth()) / 2, (this.mainFrame.getHeight() - popupDialog.getHeight()) / 2);
-
     public void showPopupDialog(PopupConfigurationModel popupConfigurationModel) {
         var popupDialog = this.applicationContext.getBean(PopupDialog.class);
         popupDialog.init(popupConfigurationModel);
@@ -31,7 +28,7 @@ public class UiComponentSpringPrototypeFactory implements ApplicationContextAwar
     }
 
     public void showGlobalSettingsDialog(ApplicationSettingsModel applicationSettingsModel) {
-        var globalSettingsDialog = this.applicationContext.getBean(GlobalSettingsDialog.class);
+        var globalSettingsDialog = this.applicationContext.getBean(ApplicationSettingsDialog.class);
         globalSettingsDialog.loadSettings(applicationSettingsModel);
         globalSettingsDialog.pack();
         globalSettingsDialog.setVisible(true);

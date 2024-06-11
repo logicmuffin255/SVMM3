@@ -7,6 +7,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class SVMM3Application {
+    public static final String APPLICATION_VERSION = "1.0";
+
     public static void main(String[] args) {
         FlatLightLaf.setup();
         new SpringApplicationBuilder(SVMM3Application.class)
@@ -14,4 +16,6 @@ public class SVMM3Application {
                 .run(args);
     }
 
+
 }
+

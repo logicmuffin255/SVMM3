@@ -22,7 +22,7 @@ public class StartupManager {
     @EventListener
     public void onApplicationEvent(ApplicationStartedEvent ignoredEvent) {
         ApplicationSettingsModel applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
-        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
+        if (applicationSettingsModel.getStardewPath().isBlank() || applicationSettingsModel.getTextEditorPath().isBlank() || applicationSettingsModel.getModsPath().isBlank()) {
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("First Time Setup")
