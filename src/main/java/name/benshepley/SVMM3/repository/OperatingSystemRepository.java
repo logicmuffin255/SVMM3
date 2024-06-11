@@ -1,6 +1,6 @@
 package name.benshepley.SVMM3.repository;
 
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +55,11 @@ public class OperatingSystemRepository {
         }
     }
 
-    public void createProfile(ProfileSettingsModel profileSettingsModel) {
+    public void createProfile(ProfileFileSystemModel profileFileSystemModel) {
         try {
             var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
 
-            var profileDirectory = Path.of(applicationSettingsModel.getModsPath() + "\\" + profileSettingsModel.getName());
+            var profileDirectory = Path.of(applicationSettingsModel.getModsPath() + "\\" + profileFileSystemModel.getName());
             Files.createDirectory(profileDirectory);
             Files.createDirectory(Path.of(profileDirectory + "\\enabled"));
             Files.createDirectory(Path.of(profileDirectory + "\\disabled"));

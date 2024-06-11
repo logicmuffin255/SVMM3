@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.model.application;
+package name.benshepley.SVMM3.model.application.ui;
 
 import lombok.Builder;
 import lombok.Data;

@@ -2,9 +2,9 @@ package name.benshepley.SVMM3.view.component.panel;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
+import name.benshepley.SVMM3.model.filesystem.ModFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
-import name.benshepley.SVMM3.model.application.settings.ModSettingsModel;
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class ProfileTabPanel extends JPanel {
     private final JButton playStardewWithoutSMAPIButton;
 
     // Model:
-    private ProfileSettingsModel profileSettingsModel;
+    private ProfileFileSystemModel profileFileSystemModel;
 
     @Autowired
     public ProfileTabPanel(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController) {
@@ -124,11 +124,11 @@ public class ProfileTabPanel extends JPanel {
         super.add(playStardewWithoutSMAPIButton, "span 2, wrap");
     }
 
-    public void loadPanel(ProfileSettingsModel profileSettingsModel) {
-        this.profileSettingsModel = profileSettingsModel;
+    public void loadPanel(ProfileFileSystemModel profileFileSystemModel) {
+        this.profileFileSystemModel = profileFileSystemModel;
 
-        Object[][] data = Stream.concat(profileSettingsModel.getEnabledMods().stream(), profileSettingsModel.getDisabledMods().stream())
-                .sorted(Comparator.comparing(ModSettingsModel::getName))
+        Object[][] data = Stream.concat(profileFileSystemModel.getEnabledMods().stream(), profileFileSystemModel.getDisabledMods().stream())
+                .sorted(Comparator.comparing(ModFileSystemModel::getName))
                 .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
                 .toArray(Object[][]::new);
 

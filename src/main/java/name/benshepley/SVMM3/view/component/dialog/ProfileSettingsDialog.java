@@ -1,9 +1,9 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
-import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
-import name.benshepley.SVMM3.model.application.settings.ProfileSettingsModel;
+import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
@@ -27,7 +27,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private final JButton cancelButton;
 
     private ApplicationSettingsModel applicationSettingsModel;
-    private ProfileSettingsModel profileSettingsModel;
+    private ProfileFileSystemModel profileFileSystemModel;
 
     @Autowired
     public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController) {
@@ -54,7 +54,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         super.add(cancelButton);
     }
 
-    public void loadSettings(ProfileSettingsModel profileSettingsModel) {
+    public void loadSettings(ProfileFileSystemModel profileFileSystemModel) {
         /* Setup Buttons: */
         this.cancelButton.addActionListener(a -> super.dispose());
         this.saveButton.addActionListener(a -> {
@@ -66,12 +66,12 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
 
         });
 
-        if (this.profileSettingsModel == null) {
-            this.profileSettingsModel = new ProfileSettingsModel();
+        if (this.profileFileSystemModel == null) {
+            this.profileFileSystemModel = new ProfileFileSystemModel();
             this.setupForFirstTime();
         } else {
-            this.profileSettingsModel = profileSettingsModel;
-            this.profileNameTextField.setText(this.profileSettingsModel.getName());
+            this.profileFileSystemModel = profileFileSystemModel;
+            this.profileNameTextField.setText(this.profileFileSystemModel.getName());
         }
     }
 
@@ -86,9 +86,9 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     }
 
     private boolean validateForm() {
-        this.profileSettingsModel.setName(this.profileNameTextField.getText());
+        this.profileFileSystemModel.setName(this.profileNameTextField.getText());
 
-        if (this.profileSettingsModel.getName().isBlank()) {
+        if (this.profileFileSystemModel.getName().isBlank()) {
             this.uiComponentSpringPrototypeFactory.showPopupDialog(
                     PopupConfigurationModel.builder()
                             .title("Profile Name Required")

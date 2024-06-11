@@ -1,4 +1,4 @@
-package name.benshepley.SVMM3.model.smapi;
+package name.benshepley.SVMM3.model.filesystem.smapi;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

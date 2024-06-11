@@ -1,6 +1,6 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
-import name.benshepley.SVMM3.model.application.PopupConfigurationModel;
+import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

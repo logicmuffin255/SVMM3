@@ -20,6 +20,9 @@ public class OperatingSystemController {
 
     }
 
+    public void createPath() {
+
+    }
 
     public void movePath() {
 
