@@ -3,7 +3,6 @@ package name.benshepley.SVMM3.view.component.panel;
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
 import name.benshepley.SVMM3.controller.ProfileController;
-import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.filesystem.ModFileSystemModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
@@ -86,21 +85,6 @@ public class ProfileTabPanel extends JPanel {
         this.modsTable = new JTable(model);
         JScrollPane modsTableScrollPane = new JScrollPane(this.modsTable);
 
-        this.modsTable.getColumnModel().getColumn(0).setPreferredWidth(25);
-        this.modsTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-        this.modsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        this.modsTable.getSelectionModel().addListSelectionListener(event -> {
-            if (!event.getValueIsAdjusting()) {
-                this.configureModButton.setEnabled(true);
-                this.viewModManifestButton.setEnabled(true);
-                this.browseToModFolderButton.setEnabled(true);
-                this.browseToModRepositoryButton.setEnabled(true);
-                this.copyModButton.setEnabled(true);
-                this.pasteModButton.setEnabled(true);
-                this.deleteModButton.setEnabled(true);
-            }
-        });
-
         this.playStardewWithSMAPIButton = new JButton("Play Stardew (With SMAPI)");
         this.playStardewWithoutSMAPIButton = new JButton("Play Stardew (Without SMAPI)");
 
@@ -137,8 +121,22 @@ public class ProfileTabPanel extends JPanel {
             }
         });
 
-        ApplicationSettingsModel applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
+        this.modsTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        this.modsTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        this.modsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        this.modsTable.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                this.configureModButton.setEnabled(true);
+                this.viewModManifestButton.setEnabled(true);
+                this.browseToModFolderButton.setEnabled(true);
+                this.browseToModRepositoryButton.setEnabled(true);
+                this.copyModButton.setEnabled(true);
+                this.pasteModButton.setEnabled(true);
+                this.deleteModButton.setEnabled(true);
+            }
+        });
 
+        var applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
         this.playStardewWithSMAPIButton.addActionListener(a -> this.operatingSystemController.execute(applicationSettingsModel.getStardewPath() + "\\" + this.smapiFilename));
         this.playStardewWithoutSMAPIButton.addActionListener(a -> this.operatingSystemController.execute(applicationSettingsModel.getStardewPath() + "\\" + this.stardewFilename));
     }

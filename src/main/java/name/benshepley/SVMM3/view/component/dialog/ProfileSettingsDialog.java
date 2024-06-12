@@ -1,6 +1,5 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
-import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
 import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;

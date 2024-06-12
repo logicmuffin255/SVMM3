@@ -43,6 +43,7 @@ public class UiComponentSpringPrototypeFactory implements ApplicationContextAwar
 
     public ProfileTabPanel produceProfileTabPanel(ProfileFileSystemModel profileFileSystemModel) {
         var profileTabPanel = this.applicationContext.getBean(ProfileTabPanel.class);
+        profileTabPanel.loadPanel(profileFileSystemModel);
         return profileTabPanel;
     }
 
