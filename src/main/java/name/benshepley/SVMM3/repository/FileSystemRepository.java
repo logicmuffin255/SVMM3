@@ -17,7 +17,11 @@ public class FileSystemRepository {
 
     // TODO:
     public void createPath(Path source) {
-
+        try {
+            Files.createDirectory(source);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     public void movePath(Path source, Path destination) {

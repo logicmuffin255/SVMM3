@@ -1,6 +1,7 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
+import name.benshepley.SVMM3.controller.OperatingSystemController;
 import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
@@ -20,6 +21,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     /* Spring Beans: */
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
     private final ProfileController profileController;
+    private final OperatingSystemController operatingSystemController;
 
     /* Swing Components: */
     private final JTextField profileNameTextField;
@@ -30,11 +32,12 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private ProfileFileSystemModel profileFileSystemModel;
 
     @Autowired
-    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, ProfileController profileController) {
+    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ProfileController profileController, OperatingSystemController operatingSystemController) {
         super(parent, "Profile Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
+        this.operatingSystemController = operatingSystemController;
         this.profileController = profileController;
 
         /* Setup UI Components: */
@@ -59,6 +62,9 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         this.profileFileSystemModel = profileFileSystemModel;
 
         if (this.profileFileSystemModel.getName().isBlank()) {
+            /* Setup Dialog: */
+            this.profileNameTextField.setText("Initial Profile");
+
             /* Setup Buttons: */
             this.cancelButton.setEnabled(false);
             this.deleteButton.setEnabled(false);
@@ -68,10 +74,10 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
                 if (this.validateForm()) {
                     super.dispose();
                     this.profileController.createProfile(this.profileFileSystemModel.getName());
+                    this.operatingSystemController.sync();
                 }
             });
 
-            this.setupForFirstTime();
         } else {
             /* Setup Dialog: */
             this.profileNameTextField.setText(this.profileFileSystemModel.getName());
@@ -93,16 +99,6 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
                 }
             });
         }
-    }
-
-    public void setupForFirstTime() {
-        this.cancelButton.setEnabled(false);
-        this.deleteButton.setEnabled(false);
-        this.profileNameTextField.setText("Initial Profile");
-
-        this.saveButton.addActionListener(e -> {
-
-        });
     }
 
     private boolean validateForm() {

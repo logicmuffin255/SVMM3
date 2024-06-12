@@ -1,7 +1,9 @@
 package name.benshepley.SVMM3.controller;
 
+import name.benshepley.SVMM3.service.FileSystemSyncService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -10,6 +12,14 @@ import java.io.IOException;
 public class OperatingSystemController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OperatingSystemController.class);
 
+    /* Spring Beans: */
+    private final FileSystemSyncService fileSystemSyncService;
+
+    @Autowired
+    public OperatingSystemController(FileSystemSyncService fileSystemSyncService) {
+        this.fileSystemSyncService = fileSystemSyncService;
+    }
+
     public void execute(String source) {
         try {
             new ProcessBuilder(source)
@@ -17,5 +27,9 @@ public class OperatingSystemController {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
+    }
+
+    public void sync() {
+        this.fileSystemSyncService.sync();
     }
 }

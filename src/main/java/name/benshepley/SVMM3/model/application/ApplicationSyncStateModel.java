@@ -16,5 +16,4 @@ import java.util.List;
 public class ApplicationSyncStateModel {
     private ApplicationSettingsModel applicationSettings = new ApplicationSettingsModel();
     private List<ProfileFileSystemModel> profileFileSystem = new ArrayList<>();
-
 }
