@@ -2,10 +2,8 @@ package name.benshepley.SVMM3.view.component.panel;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
-import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.filesystem.ModFileSystemModel;
 import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
-import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +21,8 @@ import java.util.stream.Stream;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileTabPanel extends JPanel {
     /* Spring Beans: */
-    private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
     private final ApplicationSettingsController applicationSettingsController;
     private final OperatingSystemController operatingSystemController;
-    private final ProfileController profileController;
 
     /* Properties: */
     @Value("${application.stardew.filename}")
@@ -50,19 +46,16 @@ public class ProfileTabPanel extends JPanel {
     private final JButton playStardewWithoutSMAPIButton;
 
     // Model:
-    private ProfileFileSystemModel profileFileSystemModel;
     private final Object[] modsTableColumns = new Object[]{ "Enabled", "Name", "Version", "Notes" };
 
     @Autowired
-    public ProfileTabPanel(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController, ProfileController profileController) {
+    public ProfileTabPanel(ApplicationSettingsController applicationSettingsController, OperatingSystemController operatingSystemController) {
         super(new MigLayout("wrap 4", "[grow, fill]", "[grow, fill]"));
 
         super.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-        this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
         this.applicationSettingsController = applicationSettingsController;
         this.operatingSystemController = operatingSystemController;
-        this.profileController = profileController;
 
         this.configureModButton = new JButton("Edit Mod Configuration");
         this.configureModButton.setEnabled(false);
@@ -103,8 +96,6 @@ public class ProfileTabPanel extends JPanel {
     }
 
     public void loadPanel(ProfileFileSystemModel profileFileSystemModel) {
-        this.profileFileSystemModel = profileFileSystemModel;
-
         Object[][] data = Stream.concat(profileFileSystemModel.getEnabledMods().stream(), profileFileSystemModel.getDisabledMods().stream())
                 .sorted(Comparator.comparing(ModFileSystemModel::getName))
                 .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})

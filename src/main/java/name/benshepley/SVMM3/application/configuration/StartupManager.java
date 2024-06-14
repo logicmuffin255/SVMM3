@@ -29,7 +29,9 @@ public class StartupManager {
                             .message("This is your first time running the mod manager. You need to configure the application before you can use it. You will be asked to select where you installed Stardew Valley, a text editor and where you would like to store the mods that mod manager manages.")
                             .okButtonActionListener(e -> StartupManager.this.uiComponentSpringPrototypeFactory.showGlobalSettingsDialog(applicationSettingsModel))
                         .build());
-        } /*else if (applicationSettingsModel.getProfileSettings().isEmpty()) {
+        }
+        // TODO:
+        /*else if (applicationSettingsModel.getProfileSettings().isEmpty()) {
             this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(new ProfileFileSystemModel("Initial Profile", Collections.emptyList(), Collections.emptyList()));
         }*/
     }

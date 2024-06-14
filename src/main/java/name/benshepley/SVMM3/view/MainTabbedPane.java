@@ -35,8 +35,14 @@ public class MainTabbedPane extends JTabbedPane {
         super.insertTab("➕", null, addPanel, null, 0);
         super.addChangeListener(e -> {
             if (super.getSelectedIndex() == super.getTabCount() - 1) {
-                // TODO:
-                System.out.println("IT is time, captain.");
+                super.setSelectedIndex(0);
+                System.out.println("yay");
+//                var profileFileSystemModel = new ProfileFileSystemModel();
+//                profileFileSystemModel.setName("New Panel");
+//                var profileTabPanel = this.uiComponentSpringPrototypeFactory.produceProfileTabPanel(profileFileSystemModel);
+//                super.insertTab(profileFileSystemModel.getName(), null, profileTabPanel, null, 0);
+                super.setSelectedIndex(0);
+
             }
         });
     }
