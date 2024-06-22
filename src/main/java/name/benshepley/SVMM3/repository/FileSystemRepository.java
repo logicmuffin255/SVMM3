@@ -15,43 +15,46 @@ import java.util.stream.Stream;
 public class FileSystemRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemRepository.class);
 
-    // TODO:
-    public void createPath(Path source) {
+    public void mkdir(Path source) {
         try {
             Files.createDirectory(source);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
-    public void movePath(Path source, Path destination) {
+    public void mv(Path source, Path destination) {
         File sourceFile = source.toFile();
         File destinationFile = destination.toFile();
 
         if (!sourceFile.exists()) {
-            LOGGER.info("Move Path was called but source path did not exist.");
-            return;
+            LOGGER.error("Move was called but source path did not exist.");
+            throw new RuntimeException("Move was called but source path did not exist.");
         }
 
-        if (destinationFile.exists()) {
-            LOGGER.info("Move Path was called but destination path did not exist.");
-            return;
-        }
-
-        try {
-            Files.move(source.toFile().toPath(), destination.toFile().toPath());
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+        if (!Files.isDirectory(source) && Files.isDirectory(destination)) {
+            try {
+                Files.move(source.toFile().toPath(), destination.toFile().toPath());
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            }
+        } else if (Files.isDirectory(source) && Files.isDirectory(destination)) {
+            if (!sourceFile.renameTo(new File(destinationFile + "\\" + sourceFile.getName()))) {
+                throw new RuntimeException("Unable to move " + sourceFile + " to " + destinationFile);
+            }
+        } else {
+            throw new RuntimeException("Cannot move file into file or directory into file. Unable to move " + sourceFile + " to " + destinationFile);
         }
     }
 
-    // TODO:
-    public void copyPath(Path source, Path destination) {
+    public void cp(Path source, Path destination) {
         File sourceFile = source.toFile();
         File destinationFile = destination.toFile();
     }
 
-    public void deletePath(Path sourcePath) {
+    public void rm(Path sourcePath) {
         File sourceFile = sourcePath.toFile();
 
         if (!sourceFile.exists()) {

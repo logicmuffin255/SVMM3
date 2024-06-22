@@ -5,7 +5,10 @@ import name.benshepley.SVMM3.repository.FileSystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 @Controller
 public class ProfileController {
@@ -22,24 +25,40 @@ public class ProfileController {
     public void createProfile(String source) {
         var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
 
-        this.fileSystemRepository.createPath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source));
-        this.fileSystemRepository.createPath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source + "\\" + "enabled"));
-        this.fileSystemRepository.createPath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source + "\\" + "disabled"));
+        this.fileSystemRepository.mkdir(Path.of(applicationSettingsModel.getModsPath() + "\\" + source));
+        this.fileSystemRepository.mkdir(Path.of(applicationSettingsModel.getModsPath() + "\\" + source + "\\" + "enabled"));
+        this.fileSystemRepository.mkdir(Path.of(applicationSettingsModel.getModsPath() + "\\" + source + "\\" + "disabled"));
     }
 
     public void moveProfile(String source, String destination) {
         var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
-        this.fileSystemRepository.movePath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source), Path.of(applicationSettingsModel.getModsPath() + "\\" + destination));
+        this.fileSystemRepository.mv(Path.of(applicationSettingsModel.getModsPath() + "\\" + source), Path.of(applicationSettingsModel.getModsPath() + "\\" + destination));
     }
 
     public void copyProfile(String source, String destination) {
         var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
-        this.fileSystemRepository.copyPath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source), Path.of(applicationSettingsModel.getModsPath() + "\\" + destination));
+        this.fileSystemRepository.cp(Path.of(applicationSettingsModel.getModsPath() + "\\" + source), Path.of(applicationSettingsModel.getModsPath() + "\\" + destination));
     }
 
     public void deleteProfile(String source) {
         var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
-        this.fileSystemRepository.deletePath(Path.of(applicationSettingsModel.getModsPath() + "\\" + source));
+        this.fileSystemRepository.rm(Path.of(applicationSettingsModel.getModsPath() + "\\" + source));
+    }
+
+    //TODO LOG
+    public void importExistingMods(String profileName) {
+        var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
+        try (Stream<Path> files = Files.list(Path.of(applicationSettingsModel.getModsPath()))) {
+            for (Path file : files.toList()) {
+                if (file.getFileName().endsWith(profileName)) {
+                    continue;
+                }
+                this.fileSystemRepository.mv(file, Path.of(applicationSettingsModel.getModsPath() + "\\" + profileName + "\\" + "enabled" + "\\" ));
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
 

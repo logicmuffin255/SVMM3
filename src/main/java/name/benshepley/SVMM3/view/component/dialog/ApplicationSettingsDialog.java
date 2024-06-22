@@ -199,12 +199,12 @@ public class ApplicationSettingsDialog extends javax.swing.JDialog {
         if (stardewGogLocation.exists()) {
             this.applicationSettingsModel.setStardewPath(stardewGogLocation.getPath());
             this.stardewPathTextField.setText(stardewGogLocation.getPath());
-            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
+            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\Mods");
             this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         } else if (stardewSteamLocation.exists()) {
             this.applicationSettingsModel.setTextEditorPath(stardewSteamLocation.getPath());
             this.stardewPathTextField.setText(stardewSteamLocation.getPath());
-            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\mods");
+            this.modsPathTextField.setText(stardewGogLocation.getPath() + "\\Mods");
             this.stardewPathChooser.setCurrentDirectory(new File(this.applicationSettingsModel.getStardewPath()));
         }
 

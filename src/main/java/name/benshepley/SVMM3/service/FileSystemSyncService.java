@@ -45,7 +45,7 @@ public class FileSystemSyncService {
                     //TODO: Get data from mod:
                     for (var enabledMod : profileDirectory.list()) {
                         var modFileSystemModel = new ModFileSystemModel();
-                        modFileSystemModel.setName(modDirectory.getName());
+                        modFileSystemModel.setName(enabledMod);
                         enabledModsList.add(modFileSystemModel);
                     }
                     profileFileSystemModel.setEnabledMods(enabledModsList);

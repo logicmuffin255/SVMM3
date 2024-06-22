@@ -41,8 +41,21 @@ public class PopupDialog extends javax.swing.JDialog {
             }
         });
 
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setVisible(popupConfiguration.isCancelVisible());
+        cancelButton.addActionListener(e -> {
+            PopupDialog.this.dispose();
+            if (popupConfiguration.getCancelButtonActionListener() != null) {
+                popupConfiguration.getCancelButtonActionListener().actionPerformed(e);
+            }
+        });
+
+        Panel buttonPanel = new Panel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+
         super.add(messageTextArea, BorderLayout.NORTH);
-        super.add(okButton, BorderLayout.SOUTH);
+        super.add(buttonPanel, BorderLayout.SOUTH);
     }
 
 }

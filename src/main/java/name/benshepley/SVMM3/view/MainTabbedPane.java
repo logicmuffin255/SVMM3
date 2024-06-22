@@ -18,6 +18,8 @@ public class MainTabbedPane extends JTabbedPane {
     // Listeners:
     @EventListener
     public void onApplicationEvent(SyncWithFileSystemEvent syncWithFileSystemEvent) {
+        super.removeAll();
+        this.addPlusProfile();
         for (ProfileFileSystemModel profileFileSystemModel : syncWithFileSystemEvent.getApplicationSyncStateModel().getProfileFileSystem()) {
             var profileTabPanel = this.uiComponentSpringPrototypeFactory.produceProfileTabPanel(profileFileSystemModel);
             super.insertTab(profileFileSystemModel.getName(), null, profileTabPanel, null, 0);
@@ -31,6 +33,10 @@ public class MainTabbedPane extends JTabbedPane {
 
         this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
 
+        this.addPlusProfile();
+    }
+
+    private void addPlusProfile() {
         JPanel addPanel = new JPanel();
         super.insertTab("➕", null, addPanel, null, 0);
         super.addChangeListener(e -> {
@@ -46,6 +52,5 @@ public class MainTabbedPane extends JTabbedPane {
             }
         });
     }
-
 
 }

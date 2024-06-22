@@ -26,5 +26,9 @@ public class PopupConfigurationModel {
     @Builder.Default
     private String message = "";
 
-    private ActionListener okButtonActionListener ;
+    @Builder.Default
+    private boolean cancelVisible = false;
+
+    private ActionListener okButtonActionListener;
+    private ActionListener cancelButtonActionListener;
 }

@@ -1,5 +1,6 @@
 package name.benshepley.SVMM3.view.component.dialog;
 
+import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
 import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
@@ -13,12 +14,17 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileSettingsDialog extends javax.swing.JDialog {
     /* Spring Beans: */
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
+    private final ApplicationSettingsController applicationSettingsController;
     private final ProfileController profileController;
     private final OperatingSystemController operatingSystemController;
 
@@ -31,11 +37,12 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private ProfileFileSystemModel profileFileSystemModel;
 
     @Autowired
-    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ProfileController profileController, OperatingSystemController operatingSystemController) {
+    public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, ProfileController profileController, OperatingSystemController operatingSystemController) {
         super(parent, "Profile Settings", true);
         super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
+        this.applicationSettingsController = applicationSettingsController;
         this.operatingSystemController = operatingSystemController;
         this.profileController = profileController;
 
@@ -74,6 +81,17 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
                     super.dispose();
                     this.profileController.createProfile(this.profileFileSystemModel.getName());
                     this.operatingSystemController.sync();
+
+                    if (this.modsDirectoryHasMods()) {
+                        this.uiComponentSpringPrototypeFactory.showPopupDialog(
+                                PopupConfigurationModel.builder()
+                                        .title("Mods Detected in Mods directory")
+                                        .message("Existing mods were detected. Do you want to move these mods into your starting profile (ok)?")
+                                        .cancelVisible(true)
+                                        .okButtonActionListener(e -> ProfileSettingsDialog.this.profileController.importExistingMods(this.profileFileSystemModel.getName()))
+                                        .build());
+                        this.operatingSystemController.sync();
+                    }
                 }
             });
 
@@ -111,5 +129,14 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
             return false;
         }
         return true;
+    }
+
+    // TODO LOG
+    private boolean modsDirectoryHasMods() {
+        try (Stream<Path> s = Files.list(Path.of(this.applicationSettingsController.restoreApplicationSettings().getModsPath()))) {
+            return s.findAny().isPresent();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
