@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModFileSystemModel {
-    private String name;
-    private String installedVersion;
-    private String notes;
-    private String repository;
-    private Boolean enabled;
+public class ModDataModel {
+    private String name = "";
+    private String notes = "";
+    private String repository = "";
+    private Boolean enabled = false;
 }

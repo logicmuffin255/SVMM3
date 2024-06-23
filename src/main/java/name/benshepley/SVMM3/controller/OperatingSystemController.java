@@ -20,7 +20,7 @@ public class OperatingSystemController {
         this.fileSystemSyncService = fileSystemSyncService;
     }
 
-    public void execute(String source) {
+    public void execute(String... source) {
         try {
             new ProcessBuilder(source)
                     .start();
@@ -29,7 +29,12 @@ public class OperatingSystemController {
         }
     }
 
-    public void sync() {
-        this.fileSystemSyncService.sync();
+    public void sync()  {
+        try {
+            this.fileSystemSyncService.sync();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 }

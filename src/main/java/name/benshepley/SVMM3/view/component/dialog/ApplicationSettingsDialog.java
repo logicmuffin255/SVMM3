@@ -3,7 +3,7 @@ package name.benshepley.SVMM3.view.component.dialog;
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
@@ -163,7 +163,7 @@ public class ApplicationSettingsDialog extends javax.swing.JDialog {
                 if (this.validateForm()) {
                     super.dispose();
                     this.applicationSettingsController.storeApplicationSettings(this.applicationSettingsModel);
-                    this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(new ProfileFileSystemModel());
+                    this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(new ProfileModel());
                 }
             });
             this.setupForFirstTime();

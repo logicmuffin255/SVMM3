@@ -2,7 +2,7 @@ package name.benshepley.SVMM3.view;
 
 
 import name.benshepley.SVMM3.model.application.event.SyncWithFileSystemEvent;
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileModel;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,9 @@ public class MainTabbedPane extends JTabbedPane {
     public void onApplicationEvent(SyncWithFileSystemEvent syncWithFileSystemEvent) {
         super.removeAll();
         this.addPlusProfile();
-        for (ProfileFileSystemModel profileFileSystemModel : syncWithFileSystemEvent.getApplicationSyncStateModel().getProfileFileSystem()) {
-            var profileTabPanel = this.uiComponentSpringPrototypeFactory.produceProfileTabPanel(profileFileSystemModel);
-            super.insertTab(profileFileSystemModel.getName(), null, profileTabPanel, null, 0);
+        for (ProfileModel profileModel : syncWithFileSystemEvent.getApplicationSyncStateModel().getProfileFileSystem()) {
+            var profileTabPanel = this.uiComponentSpringPrototypeFactory.produceProfileTabPanel(profileModel);
+            super.insertTab(profileModel.getName(), null, profileTabPanel, null, 0);
             super.setSelectedIndex(0);
         }
     }

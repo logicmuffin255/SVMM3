@@ -10,8 +10,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileFileSystemModel {
+public class ProfileModel {
     private String name = "";
-    private List<ModFileSystemModel> enabledMods = Collections.emptyList();
-    private List<ModFileSystemModel> disabledMods = Collections.emptyList();
+    private List<ModModel> enabledMods = Collections.emptyList();
+    private List<ModModel> disabledMods = Collections.emptyList();
 }

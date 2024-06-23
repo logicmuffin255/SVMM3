@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentPackModel {
-    private String uniqueID;
-    private String minimumVersion;
+    private String uniqueID = "";
+    private String minimumVersion = "";
 }

@@ -3,7 +3,7 @@ package name.benshepley.SVMM3.view.service;
 
 import name.benshepley.SVMM3.model.application.settings.ApplicationSettingsModel;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileModel;
 import name.benshepley.SVMM3.view.component.dialog.ApplicationSettingsDialog;
 import name.benshepley.SVMM3.view.component.dialog.PopupDialog;
 import name.benshepley.SVMM3.view.component.dialog.ProfileSettingsDialog;
@@ -34,16 +34,16 @@ public class UiComponentSpringPrototypeFactory implements ApplicationContextAwar
         globalSettingsDialog.setVisible(true);
     }
 
-    public void showProfileSettingsDialog(ProfileFileSystemModel profileFileSystemModel) {
+    public void showProfileSettingsDialog(ProfileModel profileModel) {
         var profileSettingsDialog = this.applicationContext.getBean(ProfileSettingsDialog.class);
-        profileSettingsDialog.loadSettings(profileFileSystemModel);
+        profileSettingsDialog.loadSettings(profileModel);
         profileSettingsDialog.pack();
         profileSettingsDialog.setVisible(true);
     }
 
-    public ProfileTabPanel produceProfileTabPanel(ProfileFileSystemModel profileFileSystemModel) {
+    public ProfileTabPanel produceProfileTabPanel(ProfileModel profileModel) {
         var profileTabPanel = this.applicationContext.getBean(ProfileTabPanel.class);
-        profileTabPanel.loadPanel(profileFileSystemModel);
+        profileTabPanel.loadPanel(profileModel);
         return profileTabPanel;
     }
 

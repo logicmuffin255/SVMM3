@@ -30,10 +30,6 @@ public class StartupManager {
                             .okButtonActionListener(e -> StartupManager.this.uiComponentSpringPrototypeFactory.showGlobalSettingsDialog(applicationSettingsModel))
                         .build());
         }
-        // TODO:
-        /*else if (applicationSettingsModel.getProfileSettings().isEmpty()) {
-            this.uiComponentSpringPrototypeFactory.showProfileSettingsDialog(new ProfileFileSystemModel("Initial Profile", Collections.emptyList(), Collections.emptyList()));
-        }*/
     }
 
 

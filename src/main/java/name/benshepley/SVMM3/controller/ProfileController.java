@@ -2,6 +2,8 @@ package name.benshepley.SVMM3.controller;
 
 import name.benshepley.SVMM3.repository.ApplicationSettingsRepository;
 import name.benshepley.SVMM3.repository.FileSystemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -12,6 +14,8 @@ import java.util.stream.Stream;
 
 @Controller
 public class ProfileController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
+
     // Spring Beans:
     private final ApplicationSettingsRepository applicationSettingsRepository;
     private final FileSystemRepository fileSystemRepository;
@@ -45,7 +49,6 @@ public class ProfileController {
         this.fileSystemRepository.rm(Path.of(applicationSettingsModel.getModsPath() + "\\" + source));
     }
 
-    //TODO LOG
     public void importExistingMods(String profileName) {
         var applicationSettingsModel = this.applicationSettingsRepository.restoreApplicationSettings();
         try (Stream<Path> files = Files.list(Path.of(applicationSettingsModel.getModsPath()))) {
@@ -54,10 +57,10 @@ public class ProfileController {
                     continue;
                 }
                 this.fileSystemRepository.mv(file, Path.of(applicationSettingsModel.getModsPath() + "\\" + profileName + "\\" + "enabled" + "\\" ));
-
             }
         } catch (IOException e) {
-            throw new RuntimeException();
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 

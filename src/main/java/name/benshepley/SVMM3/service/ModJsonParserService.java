@@ -20,12 +20,14 @@ public class ModJsonParserService {
     public void init() {
         this.objectMapper = JsonMapper.builder().configure(
                 MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+
             .build();
     }
 
     public ModManifestDataModel parseManifestJson(String manifestJson) {
-        ModManifestDataModel model = null;
+        ModManifestDataModel model = new ModManifestDataModel();
         try {
+            manifestJson = manifestJson.replace("\uFEFF", "");
             model = this.objectMapper.readValue(manifestJson, ModManifestDataModel.class);
         } catch (JsonProcessingException e) {
             LOGGER.error(e.getMessage(), e);

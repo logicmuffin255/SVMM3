@@ -2,8 +2,7 @@ package name.benshepley.SVMM3.view.component.panel;
 
 import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
-import name.benshepley.SVMM3.model.filesystem.ModFileSystemModel;
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileModel;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 @Component
@@ -95,10 +93,13 @@ public class ProfileTabPanel extends JPanel {
         super.add(playStardewWithoutSMAPIButton, "span 2, wrap");
     }
 
-    public void loadPanel(ProfileFileSystemModel profileFileSystemModel) {
-        Object[][] data = Stream.concat(profileFileSystemModel.getEnabledMods().stream(), profileFileSystemModel.getDisabledMods().stream())
-                .sorted(Comparator.comparing(ModFileSystemModel::getName))
-                .map(d -> new Object[]{d.getEnabled(), d.getName(), d.getInstalledVersion(), d.getNotes()})
+    public void loadPanel(ProfileModel profileModel) {
+        Object[][] data = Stream.concat(profileModel.getEnabledMods().stream(), profileModel.getDisabledMods().stream())
+                .map(d -> new Object[]{
+                        d.getModDataModel().getEnabled(),
+                        d.getModDataModel().getName(),
+                        d.getModManifestDataModel().getVersion(),
+                        d.getModDataModel().getNotes()})
                 .toArray(Object[][]::new);
 
         this.modsTable.setModel(new DefaultTableModel(data, modsTableColumns) {
@@ -128,8 +129,8 @@ public class ProfileTabPanel extends JPanel {
         });
 
         var applicationSettingsModel = this.applicationSettingsController.restoreApplicationSettings();
-        this.playStardewWithSMAPIButton.addActionListener(a -> this.operatingSystemController.execute(applicationSettingsModel.getStardewPath() + "\\" + this.smapiFilename));
         this.playStardewWithoutSMAPIButton.addActionListener(a -> this.operatingSystemController.execute(applicationSettingsModel.getStardewPath() + "\\" + this.stardewFilename));
+        this.playStardewWithSMAPIButton.addActionListener(a -> this.operatingSystemController.execute(applicationSettingsModel.getStardewPath() + "\\" + this.smapiFilename,  " --mods-path ", applicationSettingsModel.getModsPath() + "\\" + profileModel.getName() + "\\enabled"));
     }
 
 

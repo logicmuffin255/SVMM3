@@ -4,10 +4,12 @@ import name.benshepley.SVMM3.controller.ApplicationSettingsController;
 import name.benshepley.SVMM3.controller.OperatingSystemController;
 import name.benshepley.SVMM3.controller.ProfileController;
 import name.benshepley.SVMM3.model.application.ui.PopupConfigurationModel;
-import name.benshepley.SVMM3.model.filesystem.ProfileFileSystemModel;
+import name.benshepley.SVMM3.model.filesystem.ProfileModel;
 import name.benshepley.SVMM3.view.MainFrame;
 import name.benshepley.SVMM3.view.service.UiComponentSpringPrototypeFactory;
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -22,6 +24,8 @@ import java.util.stream.Stream;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProfileSettingsDialog extends javax.swing.JDialog {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileSettingsDialog.class);
+
     /* Spring Beans: */
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
     private final ApplicationSettingsController applicationSettingsController;
@@ -34,7 +38,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
     private final JButton deleteButton;
     private final JButton cancelButton;
 
-    private ProfileFileSystemModel profileFileSystemModel;
+    private ProfileModel profileModel;
 
     @Autowired
     public ProfileSettingsDialog(MainFrame parent, UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsController applicationSettingsController, ProfileController profileController, OperatingSystemController operatingSystemController) {
@@ -64,10 +68,10 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         super.add(cancelButton);
     }
 
-    public void loadSettings(ProfileFileSystemModel profileFileSystemModel) {
-        this.profileFileSystemModel = profileFileSystemModel;
+    public void loadSettings(ProfileModel profileModel) {
+        this.profileModel = profileModel;
 
-        if (this.profileFileSystemModel.getName().isBlank()) {
+        if (this.profileModel.getName().isBlank()) {
             /* Setup Dialog: */
             this.profileNameTextField.setText("Initial Profile");
 
@@ -76,10 +80,10 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
             this.deleteButton.setEnabled(false);
 
             this.saveButton.addActionListener(a -> {
-                this.profileFileSystemModel.setName(this.profileNameTextField.getText());
+                this.profileModel.setName(this.profileNameTextField.getText());
                 if (this.validateForm()) {
                     super.dispose();
-                    this.profileController.createProfile(this.profileFileSystemModel.getName());
+                    this.profileController.createProfile(this.profileModel.getName());
                     this.operatingSystemController.sync();
 
                     if (this.modsDirectoryHasMods()) {
@@ -88,7 +92,7 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
                                         .title("Mods Detected in Mods directory")
                                         .message("Existing mods were detected. Do you want to move these mods into your starting profile (ok)?")
                                         .cancelVisible(true)
-                                        .okButtonActionListener(e -> ProfileSettingsDialog.this.profileController.importExistingMods(this.profileFileSystemModel.getName()))
+                                        .okButtonActionListener(e -> ProfileSettingsDialog.this.profileController.importExistingMods(this.profileModel.getName()))
                                         .build());
                         this.operatingSystemController.sync();
                     }
@@ -97,18 +101,18 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
 
         } else {
             /* Setup Dialog: */
-            this.profileNameTextField.setText(this.profileFileSystemModel.getName());
+            this.profileNameTextField.setText(this.profileModel.getName());
             /* Setup Buttons: */
             this.cancelButton.addActionListener(a -> super.dispose());
             this.deleteButton.addActionListener(a -> {
                 super.dispose();
-                this.profileController.deleteProfile(this.profileFileSystemModel.getName());
+                this.profileController.deleteProfile(this.profileModel.getName());
             });
             this.saveButton.addActionListener(a -> {
                 if (this.validateForm()) {
                     super.dispose();
                     var profileDirectoryFromTextField = this.profileNameTextField.getText();
-                    var profileDirectoryFromModel = this.profileFileSystemModel.getName();
+                    var profileDirectoryFromModel = this.profileModel.getName();
 
                     if (!profileDirectoryFromTextField.equals(profileDirectoryFromModel)) {
                         this.profileController.moveProfile(profileDirectoryFromModel, profileDirectoryFromTextField);
@@ -131,11 +135,11 @@ public class ProfileSettingsDialog extends javax.swing.JDialog {
         return true;
     }
 
-    // TODO LOG
     private boolean modsDirectoryHasMods() {
         try (Stream<Path> s = Files.list(Path.of(this.applicationSettingsController.restoreApplicationSettings().getModsPath()))) {
             return s.findAny().isPresent();
         } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
