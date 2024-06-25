@@ -51,7 +51,18 @@ public class FileSystemRepository {
 
     public void cp(Path source, Path destination) {
         File sourceFile = source.toFile();
-        File destinationFile = destination.toFile();
+
+        if (!sourceFile.exists()) {
+            LOGGER.error("Copy was called but source path did not exist.");
+            throw new RuntimeException("Copy was called but source path did not exist.");
+        }
+
+        try {
+            Files.copy(source.toFile().toPath(), destination.toFile().toPath());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     public void rm(Path sourcePath) {

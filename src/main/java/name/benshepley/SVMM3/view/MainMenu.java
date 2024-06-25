@@ -14,12 +14,14 @@ public class MainMenu extends JMenuBar {
     // Spring Beans:
     private final UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory;
     private final ApplicationSettingsRepository applicationSettingsRepository;
+    private final MainTabbedPane mainTabbedPane;
 
     // Constructor:
     @Autowired
-    public MainMenu(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsRepository applicationSettingsRepository) {
+    public MainMenu(UiComponentSpringPrototypeFactory uiComponentSpringPrototypeFactory, ApplicationSettingsRepository applicationSettingsRepository, MainTabbedPane mainTabbedPane) {
         this.uiComponentSpringPrototypeFactory = uiComponentSpringPrototypeFactory;
         this.applicationSettingsRepository = applicationSettingsRepository;
+        this.mainTabbedPane = mainTabbedPane;
     }
 
     @PostConstruct
@@ -44,9 +46,11 @@ public class MainMenu extends JMenuBar {
         profileMenu.add(profileSettingsMenuItem);
 
         JMenuItem copyProfileMenuItem = new JMenuItem("Copy Profile");
+        copyProfileMenuItem.addActionListener(l -> this.mainTabbedPane.copyOpenProfile());
         profileMenu.add(copyProfileMenuItem);
 
         JMenuItem deleteProfileMenuItem = new JMenuItem("Delete Profile");
+        deleteProfileMenuItem.addActionListener(l -> this.mainTabbedPane.deleteOpenProfile());
         profileMenu.add(deleteProfileMenuItem);
 
         super.add(profileMenu);
